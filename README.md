@@ -50,4 +50,4 @@
 - 로그인, 회원가입 폼 실습 ← Redux Form, revalid 라이브러리 통합
 - 이듬(E.UID) 블렌디드 러닝 웹사이트(SPA) 제작 실습
 
-[WEEK05](https://github.com/limeunseop/TIL-React-Framwork/blob/master/WEEK05.md) : 4주차
+[WEEK05](https://github.com/limeunseop/TIL-React-Framwork/blob/master/WEEK05.md) : 5주차
