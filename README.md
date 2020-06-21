@@ -9,7 +9,7 @@
 - JSX 활용
 - ES6
 
-[WEEK01](https://github.com/limeunseop/TIL-React-Framwork/blob/master/WEEK01.md) : 1주차
+[WEEK01](https://github.com/limeunseop/TIL-React-Framework/blob/master/WEEK01.md) : 1주차
 
 ---------------------------------------
 ### [2주차] : React 컴포넌트, 이벤트 처리, 컴포넌트 통신, 접근성
@@ -21,7 +21,7 @@
 - React Context API
 - React 접근성(A11Y)
 
-[WEEK02](https://github.com/limeunseop/TIL-React-Framwork/blob/master/WEEK02.md) : 2주차
+[WEEK02](https://github.com/limeunseop/TIL-React-Framework/blob/master/WEEK02.md) : 2주차
 
 ---------------------------------------
 
@@ -32,7 +32,7 @@
 - Styled Components I
 - Mini Project {E1}
 
-[WEEK03](https://github.com/limeunseop/TIL-React-Framwork/blob/master/WEEK03.md) : 3주차
+[WEEK03](https://github.com/limeunseop/TIL-React-Framework/blob/master/WEEK03.md) : 3주차
 
 ---------------------------------------
 
@@ -42,7 +42,7 @@
 - Redux + React Redux 라이브러리
 - Mini Project {E2}
 
-[WEEK04](https://github.com/limeunseop/TIL-React-Framwork/blob/master/WEEK04.md) : 4주차
+[WEEK04](https://github.com/limeunseop/TIL-React-Framework/blob/master/WEEK04.md) : 4주차
 
 ### [5주차] : 싱글 페이지 앱 제작 및 미들웨어, 라이브러리 등을 활용 방법
 - React Router 라이브러리
@@ -50,4 +50,4 @@
 - 로그인, 회원가입 폼 실습 ← Redux Form, revalid 라이브러리 통합
 - 이듬(E.UID) 블렌디드 러닝 웹사이트(SPA) 제작 실습
 
-[WEEK05](https://github.com/limeunseop/TIL-React-Framwork/blob/master/WEEK05.md) : 5주차
+[WEEK05](https://github.com/limeunseop/TIL-React-Framework/blob/master/WEEK05.md) : 5주차
