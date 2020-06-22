@@ -3,18 +3,19 @@
 
 
 ---------------------------------------
+
 ## 1주차 질문
 - Q. 꼭 ```await``` 키워드는 ```resolved``` 상태인 Promise만  받을 수 있는 것일까요?
   ```
     A.여기에 답변 내용을 작성합니다.
   ```
 
-- Q. 여기에 질문내용을 작성합니다.
+- Q. 의존모듈 로딩은 type="module" 을 적용한 모듈스크립트가 실행되는 시점인가요? 의존모듈은 비동기로 로딩되나요? 의존모듈 로딩이 끋나야 비로소 모듈스크립트가 실행되나요? (질문이 이해가 잘 안가시면 맨 하단의 '비동기 로딩 속성' 정리 부분 봐주시면 감사하겠습니다.)
   ```
     A.여기에 답변 내용을 작성합니다.
   ```
 
-## 1주차 대 주제를 작성합니다.
+## 강의 시작에 앞서
 
 <details open>
 <summary>1일차 학습</summary>
@@ -33,6 +34,10 @@
 -   Git 버전 관리 & GitHub 서비스
 
 > Q) '웹  표준 및 접근성 이해' 란, 웹 표준을 준수하는 코딩 및, 키보드 접근성, 시각장애인 접근성 정도로 생각하면 될까?
+
+### Front-End 개발 학습 로드맵
+[https://roadmap.sh/frontend](https://roadmap.sh/frontend)
+쭉 살펴보고 공부해야될 목표를 설정해봅시다. 일단은 React 에 집중! (향후 Sass, Jest, Cypress, TypeScript 등을 해보고 싶습니다.)
 
 ### ES 6+
 미처 정리하지 못한 파트를 여기다 간단히 정리하겠습니다.
@@ -72,7 +77,9 @@ async function asyncFn() {
 > 여기서 질문. 꼭 ```await``` 키워드는 ```resolved``` 상태인 Promise만  받을 수 있는 것일까요? 선생님께 질문드려야겠습니다.
 
 #### Async / Await 응용 테크닉
-**promise**
+일반 Promise 사용구문과 Async/Await 구문을 비교해보고, Promise.all(), 구조분해 할당으로 응용해보겠습니다.
+
+**Promise**
 ```javascript
 const api = 'https://jsonplaceholder.typicode.com';
 
@@ -121,8 +128,34 @@ async function asyncCallDatas() {
 - Promise.all 중에 하나가 rejected 된다면 rejected 된 Promise만 반환합니다. 위 테크닉을 적용 시 이에대한 변수를 생각하여 코딩해야 할것 같습니다.
 
 ### 우리가 Framework 를 사용하는 이유
-일단 스샷에 대한 궁금증 해결먼저.
-차세대 웹 표준에 사용될 개발 패러다임을 브라우저 호환 고민 없이 오늘날 바로 사용할 수 있기 때문
+차세대 웹 표준에 사용될 개발 패러다임을 브라우저 호환 고민 없이 오늘날 바로 사용할 수 있기 때문입니다. 대표적인 차세대 개발 패러다임은 모듈프로그래밍, 컴포넌트 시스템 2가지가 있습니다.
+> 그 중 모듈프로그래밍을 좀 정리하고싶어 개인적인 정리용으로 장황히 적었으니 참고용으로 간단히 보시기 바랍니다.
+
+#### 모듈프로그래밍
+![main.js 내부에서 의존모듈을 정의하는 모습](https://lh3.googleusercontent.com/bUNucPaOYfFuv7Vmyy3eQ3461ouUL9j8itCVs9inY_mjGB1enLXmMPL0g568DPMIPqc_NBrRaNkMOYFIBeE3GNlPNcx4PtW_i6311SMVAiQRyPEvNdNrQU5HzaL9I3elB4pIUNtiWkHje4XXhZi3HtvUcQGZgXweoc1DLCny0I6Quqy1h6qfR_Fp0kA8QqGYNFMNCQr98xaLY390EvhGGkOWx_ktsP88AWBtoRx_cSDuZPCF8wP3YvayE6UWl67xbK-vf5dbkP9RKQ-5rAFQuyclAvyZ5__TKxG29q9OkCE_siWaPenNkwXVvCfvEqlhp1OAJI8dhcM6-b1gz6qCQwvCdpVf6xpQ3DpZ3Wp799f5n1oNdSudJ411MVTqzMNJVhbfiDkENoMZlqWZl-sNM_VgLUY4Xf5xaukL2pvFoeuAQMoxA0qvH1sPgZKSDqneWiqVRgWwn3c5PpGf9hx_VWC2UNF0E9vY8pW7usZcy6W1CHTwpAcOS9FPsj4voXpYnbE3-oRBnAMv3XKZ90IjkHQ14qnwkgIQyZ07_oSt6t6INLND8VCTsujEVLyhXCDI5OwTzYqDsCW3k_x4YF2QS3Lg_v4fROc98yYmUQJv3KUrY_X1KpiCAuMdjY6kNfCFkKCYFaOAg5sj3cYWb_jmx2pqYtvidT5ZGG1PqVTMVJFxtBojKbgDxEIOGC4y=w848-h404-no?authuser=1)
+- 다음과 같이 module 을 import 하면 html에 ```script``` 태그를 일일히 선언하지 않고도 한 파일 내에서 모듈 의존관계가 명확히 정의됩니다.
+- 의존모듈에서도 꼬리에 꼬리를 물어 의존모듈을 로딩합니다. 이 때, 모듈 로딩은 비동기로 이루어집니다.
+
+![enter image description here](https://lh3.googleusercontent.com/-JGJxPP3Mpju_YCtwcOIj1QbFdf5WkE8cft9glnYHQK7oB_qr0rFr1x_fhU80gunA7bwSdqZNNT1M3gTFtZfUujlAGU6rw4LQno9ZCZS8K9aJ29wB-UUuYE3YqoyInHXqgoJoslPD6gYlvLNyJoJyznCLQ0G3zVAf8Dkm-nzsN6t--S5ayohBdiitLeShC3_SNf4s3glqa-TPzV5sP04eYVPjL6TM6lxm7qvV7uVWyv0eO_IgQ6-LE5ACCCAI9RoFKeQkHPTZbfTQ8bBn3bvNHW9HuGE5MJMOki9aUARw4rxP4p5eqUfVZ3p9t9SIYmpfLyjmJOoe6dm_vJ4miBIbZH_n1nEBasXGUWy81uoU8c12crxpOCM_m8aC9PKtorASHsl1gIvPJ3__-SoAPph1ozIjTr8jBCd-YTwI9pFHpVqt6muaVp-wmWw7fXrjQM9kclxmdQI79p-4CmbHzXXWoTs1B3VoiWkh9Wd6nXaN3HqH6bzDOpon53XZGRT5d_3pVCNm-cyeMQTZL7idZWA4Q_ekx3hQa8UnyM2tuDyJdhJJ0eyP6OdJYJ1U_A9vd9JfW3E1r5g1La8qSEqSA3YULjf65NAN0118AmUG1wU9xQsgVE8JHFeBL0zMlAvUAV5a3MMizqqpDUnLqr_8okXRFEff1G-OT946auvc6Z2sn-X3fdvPk0TDkGakoht=w1242-h388-no?authuser=1)
+
+이런식으로 모듈프로그래밍을 하면 DOMContentLoaded 시간이 눈에띄게 줄어드는 것을 볼 수 있습니다. 원래는 모든 js 파일이 로딩되는시간이 DOMContentLoaded 였는데 말이죠. 그 이유는 다음과 같습니다.
+
+- HTML에 ```script``` 태그로 선언된 것은 main.js 단 하나밖에 없기 때문입니다. DOM 파싱 시 ```script``` 태그엔 main.js 밖에 없으니까요
+- main.js 가 로딩완료된 시점에서 DOMContentLoaded 는 이미 끝난겁니다. 이제는 실행의 문제입니다. 앞으로 나오는 의존모듈은 main.js 의 실행과 연관돼있는 것입니다.
+
+> 저는, 모듈프로그래밍 에서 script 모듈을 로딩하고 실행하는 시점을 모든 의존모듈 로딩후 라고 생각하고 있습니다.
+
+
+
+이 시점에서 ```<script>``` 태그의 로딩 & 실행 메카니즘을 포함하여 다시 정립해보도록 합시다.
+
+**비동기 로딩 속성**
+- **async 속성** : 비동기 로딩 -> DOM 파싱 일시정지후 실행 (script 사이즈가 클 경우에 따라서는 DOMContentLoaded 이후 실행 가능)
+- **defer 속성** : 비동기 로딩 -> 실행을 무조건 DOMContentLoaded 이후로 미룸
+
+**스크립트 실행 방식** : 스크립트 로딩이 끝난 후 실행할 때의 이야기 입니다.
+- 일반적으로 코드의 흐름을 읽어 차례대로 실행합니다.
+- type="module" 로 정의된 모듈방식의 스크립트 파일은 실행 전 또다시 의존모듈을 불러들이는 작업을 합니다. 이전의 단순 스크립트와는 달리 **```의존모듈로딩 -> 스크립트 실행```** 으로 이루어집니다. 의존모듈로딩이 동기인지 비동기인지는 잘 모르겠습니다만(아마 DOM이 길어질 경우 parsing 에 방해될 수 있으니 비동기로 했을겁니다), 종전과 같이 단순 스크립트를 실행하는것이 아닌, 의존모듈을 로딩하는 과정까지 추가된다는 점에서 모듈방식의 스크립트는 특별하다고 볼 수 있습니다.
 
 </div>
 </details>
