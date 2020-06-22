@@ -7,13 +7,19 @@
 ## 1주차 질문
 - Q. 꼭 ```await``` 키워드는 ```resolved``` 상태인 Promise만  받을 수 있는 것일까요? (해결완료)
   ```
-    A.rejected Promise 를 await 한다면 함수를 종단하고 rejected Promise 를 그대로 리턴합니다. resolved Promise 를 await 한다면 PromiseValue를 받을 것이고, return 키워드로 리턴시 resolved Promise에 PromiseValue는 return 값이 될것입니다.
+    A.rejected Promise 를 await 한다면 함수를 종단하고 rejected Promise 를 그대로 리턴합니다.
+    resolved Promise 를 await 한다면 PromiseValue를 받을 것이고, return 키워드로 리턴시
+    resolved Promise에 PromiseValue는 return 값이 될것입니다.
   ```
 
 - Q. 의존모듈 로딩은 type="module" 을 적용한 모듈스크립트가 실행되는 시점인가요? 의존모듈은 비동기로 로딩되나요? 의존모듈 로딩이 끋나야 비로소 모듈스크립트가 실행되나요? (질문이 이해가 잘 안가시면 맨 하단의 '비동기 로딩 속성' 정리 부분 봐주시면 감사하겠습니다.)
   ```
-    A.여기에 답변 내용을 작성합니다.
+    A.하단의 그림을 참조하면, type="module" 속성을 띄는 네이티브 모듈은 기본적으로
+    defer 방식을 취하는 것을 볼 수 있습니다. fetch시 의존모듈까지 모두 불러오며,
+    따라서 실행시점에 의존모듈을 fetch 된다는 사실은 틀렸습니다. fetch 단계에서든
+    스크립트의 import 문을 미리 다 읽어 의존모듈까지 같이 모두 불러옵니다.
   ```
+![스크립트 로딩방식 종결](https://v8.dev/_img/modules/async-defer.svg)
 
 ## 강의 시작에 앞서
 
@@ -139,24 +145,12 @@ async function asyncCallDatas() {
 
 ![DOMContentLoaded 이후에 의존모듈이 로딩되는 모습](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/1-1-2.png?raw=true)
 
-이런식으로 모듈프로그래밍을 하면 DOMContentLoaded 시간이 눈에띄게 줄어드는 것을 볼 수 있습니다. 원래는 모든 js 파일이 로딩되는시간이 DOMContentLoaded 였는데 말이죠. 그 이유는 다음과 같습니다.
-
-- HTML에 ```script``` 태그로 선언된 것은 main.js 단 하나밖에 없기 때문입니다. DOM 파싱 시 ```script``` 태그엔 main.js 밖에 없으니까요
-- main.js 가 로딩완료된 시점에서 DOMContentLoaded 는 이미 끝난겁니다. 이제는 실행의 문제입니다. 앞으로 나오는 의존모듈은 main.js 의 실행과 연관돼있는 것입니다.
-
-> 저는, 모듈프로그래밍 에서 script 모듈을 로딩하고 실행하는 시점을 모든 의존모듈 로딩후 라고 생각하고 있습니다.
-
+이런식으로 모듈프로그래밍을 하면 DOMContentLoaded 시간이 눈에띄게 줄어드는 것을 볼 수 있습니다. 원래는 모든 js 파일이 로딩되는시간이 DOMContentLoaded 였는데 말이죠. 그 이유는 main.js 하나에서 시작하여 의존모듈의 순서가 결정되고 fetch 되는데 이 의존모듈 전부 비동기 방식으로 불러오기 때문입니다.
 
 
 이 시점에서 ```<script>``` 태그의 로딩 & 실행 메카니즘을 포함하여 다시 정립해보도록 합시다.
 
-**비동기 로딩 속성**
-- **async 속성** : 비동기 로딩 -> DOM 파싱 일시정지후 실행 (script 사이즈가 클 경우에 따라서는 DOMContentLoaded 이후 실행 가능)
-- **defer 속성** : 비동기 로딩 -> 실행을 무조건 DOMContentLoaded 이후로 미룸
-
-**스크립트 실행 방식** : 스크립트 로딩이 끝난 후 실행할 때의 이야기 입니다.
-- 일반적으로 코드의 흐름을 읽어 차례대로 실행합니다.
-- type="module" 로 정의된 모듈방식의 스크립트 파일은 실행 전 또다시 의존모듈을 불러들이는 작업을 합니다. 이전의 단순 스크립트와는 달리 **```의존모듈로딩 -> 스크립트 실행```** 으로 이루어집니다. 의존모듈로딩이 동기인지 비동기인지는 잘 모르겠습니다만(아마 DOM이 길어질 경우 parsing 에 방해될 수 있으니 비동기로 했을겁니다), 종전과 같이 단순 스크립트를 실행하는것이 아닌, 의존모듈을 로딩하는 과정까지 추가된다는 점에서 모듈방식의 스크립트는 특별하다고 볼 수 있습니다.
+![스크립트 로딩방식 종결](https://v8.dev/_img/modules/async-defer.svg)
 
 </div>
 </details>
