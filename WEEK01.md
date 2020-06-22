@@ -132,11 +132,11 @@ async function asyncCallDatas() {
 > 그 중 모듈프로그래밍을 좀 정리하고싶어 개인적인 정리용으로 장황히 적었으니 참고용으로 간단히 보시기 바랍니다.
 
 #### 모듈프로그래밍
-![main.js 내부에서 의존모듈을 정의하는 모습](https://lh3.googleusercontent.com/bUNucPaOYfFuv7Vmyy3eQ3461ouUL9j8itCVs9inY_mjGB1enLXmMPL0g568DPMIPqc_NBrRaNkMOYFIBeE3GNlPNcx4PtW_i6311SMVAiQRyPEvNdNrQU5HzaL9I3elB4pIUNtiWkHje4XXhZi3HtvUcQGZgXweoc1DLCny0I6Quqy1h6qfR_Fp0kA8QqGYNFMNCQr98xaLY390EvhGGkOWx_ktsP88AWBtoRx_cSDuZPCF8wP3YvayE6UWl67xbK-vf5dbkP9RKQ-5rAFQuyclAvyZ5__TKxG29q9OkCE_siWaPenNkwXVvCfvEqlhp1OAJI8dhcM6-b1gz6qCQwvCdpVf6xpQ3DpZ3Wp799f5n1oNdSudJ411MVTqzMNJVhbfiDkENoMZlqWZl-sNM_VgLUY4Xf5xaukL2pvFoeuAQMoxA0qvH1sPgZKSDqneWiqVRgWwn3c5PpGf9hx_VWC2UNF0E9vY8pW7usZcy6W1CHTwpAcOS9FPsj4voXpYnbE3-oRBnAMv3XKZ90IjkHQ14qnwkgIQyZ07_oSt6t6INLND8VCTsujEVLyhXCDI5OwTzYqDsCW3k_x4YF2QS3Lg_v4fROc98yYmUQJv3KUrY_X1KpiCAuMdjY6kNfCFkKCYFaOAg5sj3cYWb_jmx2pqYtvidT5ZGG1PqVTMVJFxtBojKbgDxEIOGC4y=w848-h404-no?authuser=1)
+![main.js 내부에서 의존모듈을 정의하는 모습](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/1-1-1.png?raw=true)
 - 다음과 같이 module 을 import 하면 html에 ```script``` 태그를 일일히 선언하지 않고도 한 파일 내에서 모듈 의존관계가 명확히 정의됩니다.
 - 의존모듈에서도 꼬리에 꼬리를 물어 의존모듈을 로딩합니다. 이 때, 모듈 로딩은 비동기로 이루어집니다.
 
-![enter image description here](https://lh3.googleusercontent.com/-JGJxPP3Mpju_YCtwcOIj1QbFdf5WkE8cft9glnYHQK7oB_qr0rFr1x_fhU80gunA7bwSdqZNNT1M3gTFtZfUujlAGU6rw4LQno9ZCZS8K9aJ29wB-UUuYE3YqoyInHXqgoJoslPD6gYlvLNyJoJyznCLQ0G3zVAf8Dkm-nzsN6t--S5ayohBdiitLeShC3_SNf4s3glqa-TPzV5sP04eYVPjL6TM6lxm7qvV7uVWyv0eO_IgQ6-LE5ACCCAI9RoFKeQkHPTZbfTQ8bBn3bvNHW9HuGE5MJMOki9aUARw4rxP4p5eqUfVZ3p9t9SIYmpfLyjmJOoe6dm_vJ4miBIbZH_n1nEBasXGUWy81uoU8c12crxpOCM_m8aC9PKtorASHsl1gIvPJ3__-SoAPph1ozIjTr8jBCd-YTwI9pFHpVqt6muaVp-wmWw7fXrjQM9kclxmdQI79p-4CmbHzXXWoTs1B3VoiWkh9Wd6nXaN3HqH6bzDOpon53XZGRT5d_3pVCNm-cyeMQTZL7idZWA4Q_ekx3hQa8UnyM2tuDyJdhJJ0eyP6OdJYJ1U_A9vd9JfW3E1r5g1La8qSEqSA3YULjf65NAN0118AmUG1wU9xQsgVE8JHFeBL0zMlAvUAV5a3MMizqqpDUnLqr_8okXRFEff1G-OT946auvc6Z2sn-X3fdvPk0TDkGakoht=w1242-h388-no?authuser=1)
+![DOMContentLoaded 이후에 의존모듈이 로딩되는 모습](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/1-1-2.png?raw=true)
 
 이런식으로 모듈프로그래밍을 하면 DOMContentLoaded 시간이 눈에띄게 줄어드는 것을 볼 수 있습니다. 원래는 모든 js 파일이 로딩되는시간이 DOMContentLoaded 였는데 말이죠. 그 이유는 다음과 같습니다.
 
