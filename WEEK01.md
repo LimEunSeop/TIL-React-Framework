@@ -120,6 +120,10 @@ async function asyncCallDatas() {
 - Promise.all 은 PromiseStatus가 resolved이고 PromiseValue가 배열인 Promise를 반환합니다. 이에 await를 하면 비로소 온전한 배열객체를 받기 때문에 비구조화 할당이 가능해지는 것입니다.
 - Promise.all 중에 하나가 rejected 된다면 rejected 된 Promise만 반환합니다. 위 테크닉을 적용 시 이에대한 변수를 생각하여 코딩해야 할것 같습니다.
 
+### 우리가 Framework 를 사용하는 이유
+일단 스샷에 대한 궁금증 해결먼저.
+차세대 웹 표준에 사용될 개발 패러다임을 브라우저 호환 고민 없이 오늘날 바로 사용할 수 있기 때문
+
 </div>
 </details>
 
