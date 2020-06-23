@@ -21,6 +21,11 @@
   ```
 ![스크립트 로딩방식 종결](https://v8.dev/_img/modules/async-defer.svg)
 
+- Q. React 프로젝트에서 Node의 존재의미란?
+  ```
+    A.차세대 웹 패러다임 기술을 미리 사용하도록 하기 위해 Node 패키지의 도움을 잠깐 받는것일 뿐.
+  ```
+
 ## Front-End 프레임워크 소개, React 사용법, ECMAScript 2015
 
 <details open>
@@ -161,6 +166,7 @@ async function asyncCallDatas() {
 <summary>2일차 학습</summary>
 <div markdown="1">
 
+
 ### React 특징
 React 프로그래밍 특징은 **선언형, 컴포넌트 시스템, 확장성** 입니다.
 -  [**선언형(Declarative) 프로그래밍**](https://ko.wikipedia.org/wiki/%EC%84%A0%EC%96%B8%ED%98%95_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D)
@@ -195,6 +201,161 @@ ReactDOM.render(app, document.querySelector('#app'))
 ### React Quick Overview 실습
 [https://codepen.io/dmstjq12/pen/WNrjGwG?editors=1010](https://codepen.io/dmstjq12/pen/WNrjGwG?editors=1010)
 의 실습내용을 통해 React Component, React Element 를 이용하여 복잡한 내용의 네이티브 컨트롤을 마치 HTML 사용하듯 손쉽게 사용할 수 있음을 느낍시다. (+ props 동작방식도 가볍게 살펴보아요)
+
+### React 실무 개발환경
+위에서 다뤘던 실습은 단순히 Javascript 내에서 React 라이브러리를 불러서 해결했던 것입니다만, 실무에서는 저런 방법을 사용하지 않습니다. 프레임워크 라는걸 구성합니다. 대표적인 이유로는 1일차 강의에서도 알 수 있듯이 최신 웹 개발 패러다임을 미리 쓰기 위함입니다.
+![React Framework](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/1-2-1.png?raw=true)
+아래와 같은 워크플로우를 실현하기 위해, Node 의 도움을 받습니다. 이렇게 Node 의 도움을 받아 빌드 후 배포하여 웹사이트에 로딩된 React 는 브라우저에서 실행되는 것입니다.
+
+그림 해석, bundling, building 차이 정리. 질문사항 정리
+
+### React 프로젝트 생성
+```npx create-react-app \<ProjectName\>```
+npx 는 최신 node 패키지를 설치하여 즉석으로 실행시켜주는 명령어 입니다. create-react-app 은 항상 최신버전이 사용되길 권장하므로 꼭 **npx** 를 사용하도록 합시다.
+
+### React 프로젝트 디렉터리 구조
+Create React App 으로 생성한 프로젝트 디렉터리 구조입니다. 엄청 중요합니다. 가볍게 넘어가지말고 통암기하여 각각의 역할을 확실히 해둡시다!!
+```
+.
+├── README.md
+├── node_modules/ # 개발 의존 모듈 집합 디렉토리
+├── package.json
+├── public/ # 정적 리소스 디렉토리
+│   ├── favicon.ico
+│   ├── index.html # 애플리케이션 기본 템플릿
+│   └── manifest.json
+├── src/ # React 애플리케이션 개발 디렉토리
+│   ├── App.css
+│   ├── App.js # 애플리케이션 파일
+│   ├── App.test.js
+│   ├── index.css
+│   ├── index.js # 엔트리 파일
+│   ├── logo.svg
+│   └── serviceWorker.js
+└── yarn.lock
+```
+#### node_modules
+프로젝트에 필요한 개발 의존모듈 집합 디렉토리. react, react-dom, react-scripts 등과 그 모듈이 의존하는 또 다른 모듈이 여기에 설치되어 있습니다.
+
+#### package.json
+- **의존하는 모듈에 대한 정보를 관리합니다.** dependencies 속성에서 의존모듈 및 정보를 확인합니다.
+- **실행 가능한 스크립트를 관리합니다.**
+
+#### public
+정적 리소스 디렉터리. HTML, CSS, Javascript, Image, Media 파일들이 있습니다. public 안에 있는 리소스는 HTML 에서 참조가 가능합니다. **기본 템플릿 파일인 index.html**이 들어있습니다. 아래는 index.html 에 대한 코드 설명입니다.
+```html
+<!DOCTYPE html>
+<!-- en 값을 ko-KR로 변경 -->
+<html lang="ko-KR">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <!--
+      manifest.json은 웹 앱을 사용자의 모바일 장치 또는
+      데스크톱에 설치할 때 사용되는 메타 데이터를 제공합니다.
+      참고: https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      위의 태그에서 %PUBLIC_URL%을 사용합니다.
+      %PUBLIC_URL%은 빌드하는 동안`public` 폴더의 URL로 대체 됩니다.
+      public 폴더 안에 있는 파일들만 HTML에서 참조 할 수 있습니다.
+
+      "/favicon.ico"또는 "favicon.ico"과 달리, "%PUBLIC_URL%/favicon.ico"는
+      클라이언트 사이드 라우팅(CSR)과 non-root public URL에서 문제없이 작동합니다. %PUBLIC_URL% 을 해줘야 빌드 시 문제없이 작동합니다.
+      `yarn build` 명령을 실행하면 non-root public URL에 대해 알 수 있을 겁니다.
+    -->
+    <title>React 앱</title>
+  </head>
+  <body>
+    <noscript>이 앱을 실행하려면 JavaScript가 사용가능한 환경이어야 합니다.</noscript>
+    <div id="root"></div>
+    <!--
+      이 HTML 파일은 템플릿입니다.
+      브라우저에서 직접 열면 빈 페이지가 나타납니다.
+
+      이 파일에 웹 폰트, 메타 태그 또는 Google 애널리스틱(통계, 분석)을 추가 할 수 있습니다.
+      빌드 단계에서 번들 된 스크립트는 <body> 태그 내부에 삽입됩니다.
+
+      개발을 시작하려면`npm start` 또는 `yarn start`를 실행하세요.
+      배포를 위한 번들 파일을 생성하려면 `npm run build` 또는 `yarn build`를 실행합니다.
+    -->
+  </body>
+</html>
+```
+
+#### src
+실제 React 애플리케이션 개발 디렉토리. 이 안에서 모든 개발이 이루어집니다. 여기서 만들어진 가상 DOM 은 index.html 의 실제 native DOM 에 붙여지게 됩니다.
+
+##### index.js 
+핵심이 되는 엔트리(진입) 파일. 애플리케이션을 구성하는 설정이 포함되어 있습니다. App.js 파일을 불러오고 native DOM 에 렌더링 합니다. 
+```javascript
+// React 모듈 로드
+import React from 'react'
+// ReactDOM 모듈 로드
+import ReactDOM from 'react-dom'
+// 메인(인덱스) 스타일 로드
+import './index.css'
+// 앱 컴포넌트 로드
+import App from './App'
+// 서비스 워커 로드
+import * as serviceWorker from './serviceWorker'
+
+// ReactDOM 모듈의 렌더 함수를 사용해 #root (src/index.html) 요소
+// 내부에 동적으로 App 컴포넌트(React Element)를 렌더링 합니다.
+ReactDOM.render(<App />, document.getElementById('root'))
+
+// 앱을 오프라인에서 작동시키고 보다 빠르게 로드 하려면 아래 코드의 unregister()를
+// register()로 변경합니다. [노트: 이 방법은 몇 가지 문제를 수반하니 주의하세요.]
+// 서비스 작업자에 대해 자세히 알아보기: https://bit.ly/CRA-PWA
+serviceWorker.unregister()
+```
+##### App.js
+애플리케이션 파일. 실질적인 React 앱을 구성하기 시작하는 파일입니다.
+
+
+```javascript
+// React 모듈 로드
+import React from 'react'
+// 로고 이미지 로드
+import logo from './logo.svg'
+// App 스타일 로드
+import './App.css'
+
+// 함수형 컴포넌트(Functional Component)
+function App() {
+  // JSX(JavaScript 문법 확장) 반환
+  return (
+    <div className="App">
+      // class 속성 대신 className을 사용
+      <header className="App-header">
+        // 데이터(상태, state)를 템플릿에 바인딩 할 때는 {}를 사용 // Empty Element의 경우 반드시
+        태그를 닫아야 함 (예: <br />)
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          <code>src/App.js</code> 파일을 수정하고, 저장하면 리로드 됩니다.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer">
+          React 배우기
+        </a>
+      </header>
+    </div>
+  )
+}
+
+// App 컴포넌트 모듈 내보내기
+export default App
+```
+
+
+### 아직 풀리지 않은 의문
+이미지, css 임포트 하는것은 처음본다. 내일 복습하면서 좀 익숙해지자. import, export 규칙도 다시 복습하자
 
 </div>
 </details>
