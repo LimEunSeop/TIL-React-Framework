@@ -21,7 +21,7 @@
   ```
 ![스크립트 로딩방식 종결](https://v8.dev/_img/modules/async-defer.svg)
 
-## 강의 시작에 앞서
+## Front-End 프레임워크 소개, React 사용법, ECMAScript 2015
 
 <details open>
 <summary>1일차 학습</summary>
@@ -159,6 +159,50 @@ async function asyncCallDatas() {
 
 <details open>
 <summary>2일차 학습</summary>
+<div markdown="1">
+
+### React 특징
+React 프로그래밍 특징은 **선언형, 컴포넌트 시스템, 확장성** 입니다.
+-  [**선언형(Declarative) 프로그래밍**](https://ko.wikipedia.org/wiki/%EC%84%A0%EC%96%B8%ED%98%95_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D)
+ : 전달 속성 ```props```, 상태 ```state``` 변경 감지 → UI 업데이트(Rendering)
+- 컴포넌트(Component) 기반 프로그래밍
+: 캡슐화 된 컴포넌트 로직(Logic)은 템플릿(Template)이 아닌, **JSX**(Javascript+XML)로!
+- 한 번 배워 어디서나 사용 가능(Learn Once, Write Anywhere)
+: 웹 앱(Web App) 또는 네이티브 앱(Native App)
+
+### 필요 라이브러리
+- react
+- react-dom
+
+### React 의 필수개념
+React Component, React Element, ReactDOM - rendering 에 관해 먼저 알아야 한다.
+```jsx
+// React Component (Functional)
+function App() {
+  return <div>React Element</div>
+}
+
+// React Element (JSX)
+var app = <App/>
+
+// ReactDOM - rendering
+ReactDOM.render(app, document.querySelector('#app'))
+```
+- **React Component** : React Element 의 공통 설계도면과 같은 역할
+- **React Element** : React Component 에 의해 만들어진 객체. HTML 태그처럼 사용가능
+- **ReactDOM - rendering** : React Element 를 실제 DOM 에 붙이는 작업
+
+### React Quick Overview 실습
+[https://codepen.io/dmstjq12/pen/WNrjGwG?editors=1010](https://codepen.io/dmstjq12/pen/WNrjGwG?editors=1010)
+의 실습내용을 통해 React Component, React Element 를 이용하여 복잡한 내용의 네이티브 컨트롤을 마치 HTML 사용하듯 손쉽게 사용할 수 있음을 느낍시다. (+ props 동작방식도 가볍게 살펴보아요)
+
+</div>
+</details>
+
+---------------------------------------
+
+<details open>
+<summary>3일차 학습</summary>
 <div markdown="1">
 
 ### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
