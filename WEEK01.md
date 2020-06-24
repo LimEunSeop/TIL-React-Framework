@@ -366,9 +366,58 @@ export default App
 <summary>3일차 학습 - 개발도구 확장</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### Pretier - Code formatter
+설정된 옵션에 따라 자동으로 코드 스타일을 정리해주는 도구입니다.
+
+#### 초기 설정
+처음에 설정해야될 곳이 있습니다. 이 과정을 거치면 자동스타일링이 가능해집니다.
+1. Settings 패널을 열어 'format javascript' 검색 후 사용하지 않도록 설정합니다.
+2.  'format on save' 검색 후 사용 하도록 설정합니다.
+
+이후 'prettier' 검색 후 사용할 Prettier 규칙을 설정합니다.
+[https://prettier.io/playground](https://prettier.io/playground) 서비스를 이용하면 규칙적용을 쉽게 테스트하고 설정 json 코드를 얻을 수 있습니다.
+
+### Formatting Toggle
+prettier 의 포매팅 도구를 사용하고 싶지 않을 때 패키지를 disable 할 필요 없이 클릭 한 번으로 포매팅을 켜고 끌 수 있도록 하는 도구입니다.
+![how to use formatting toggle](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/1-3-1.png?raw=true)
+
+### React Snippets
+패키지명 : ES7 React/Redux/GraphQL/React-Native snippets
+► 기본 코드조각뿐만 아니라 React 전용 코드조각도 제공합니다. MarketPlace 의 명령어 리스트를 참고하여 자주 사용하는 명령어의 snipet 을 공부해봅시다.!
+
+### React Pure To Class
+React 함수형 컴포넌트를 클래스 컴포넌트로 손쉽게 변경하려면 **React Pure To Class** 확장을 설치합니다. 함수형 컴포넌트를 블록지정하고 ```SHIFT+CMD+P``` 로 명령을 찾아 실행시키면 되나, 불편하면 단축키를 지정할 수 있습니다. 저는 ```SHIFT+CTRL+OPT+P,C``` 로 하겠습니다. Pure To Class 패키지의 약자로 2자를 추린 것입니다.
+
+### Auto Import
+![Auto Import Package Info](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/1-3-2.png?raw=true)
+필요한 모듈을 자동으로 불러 들입니다. Component js 파일 하나 만들고 다른 곳에서 React Element 태그 작성중 아래 스크린샷과 같이 Auto Import 해주겠다는 자동완성을 만나면 엔터를 눌러 Auto Import 해줍니다.
+![Auto Import](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/1-3-3.png?raw=true)
+
+### Import Cost
+Import 한 모듈 코드 옆에 시각적으로 파일의 사이즈를 보여줍니다. 파일 용량이 크다 생각될 경우 좀더 하위경로의 필요한 모듈만을 가져와 최적화를 꾀할 수 있습니다.
+
+### Path Autocomplete
+모듈 경로를 작성할 때 불러올 모듈 파일 경로를 자동 완성해줍니다.
+
+### Auto Complete Tag
+태그 자동 닫기(Auto Close Tag), 태그 시작과 끝 자동 이름 변경(Auto Rename Tag) 기능을 재공합니다.
+
+### Bracket Pair Colorizer2
+코드 블록의 색상을 커스터마이징 합니다. 설정이 제대로 먹히지 않는 감이 있긴 하지만 나중에 뭔가 필요하다 싶으면 설정을 다시 살펴봐 변경해주도록 하겠습니다.
+
+### Color Highlight & Manager
+![Color Highlighter 존재이유](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/1-3-4.png?raw=true)
+CSS 에선 다음과 같이 기본적으로 Color Hightlighing & Managing 기능이 제공되는데요, React JS 화면에서는 그렇지 못합니다. JS 코드 내에서도 이를 가능하게 해주는 툴이라 보시면 됩니다.
+
+### Image Preview
+에디터 상에서 svg 같은 이미지를 미리 볼 수 있게 하는 패키지 입니다.
+
+### Translator
+클래스, 변수 및 함수 이름을 작성할 때 한글 ☞ 영어 번역 기능을 제공합니다. ```SHIFT+CMD+T``` 단축키를 통해 사용합니다.
+
+### React Developer Tools
+https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi
+크롬 extension 으로서 리엑트로 만들어진 페이지에 대한 정보를 좀 더 확인할 수 있도록 도와줍니다.
 
 </div>
 </details>
