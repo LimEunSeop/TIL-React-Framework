@@ -29,7 +29,7 @@
 ## Front-End 프레임워크 소개, React 사용법, ECMAScript 2015
 
 <details open>
-<summary>1일차 학습</summary>
+<summary>1일차 학습 - React 소개</summary>
 <div markdown="1">
 
 ### React 학습에 앞서 공부해야 할 것들
@@ -163,7 +163,7 @@ async function asyncCallDatas() {
 ---------------------------------------
 
 <details open>
-<summary>2일차 학습</summary>
+<summary>2일차 학습 - React 시작하기</summary>
 <div markdown="1">
 
 
@@ -363,7 +363,7 @@ export default App
 ---------------------------------------
 
 <details open>
-<summary>3일차 학습</summary>
+<summary>3일차 학습 - 개발도구 확장</summary>
 <div markdown="1">
 
 ### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
