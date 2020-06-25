@@ -428,9 +428,109 @@ https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopl
 <summary>4일차 학습 - JSX ➪ React 요소</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### React 렌더링 시스템 - Virtual DOM
+React 는 가상 DOM 이라는 렌더링 시스템을 사용하고 있습니다. 실제 DOM 과는 구분되는 개념인데요, 결론 먼저 말씀드리자면 UI 속도를 최적화 하기 위해 도입되었습니다.
+
+기존의 방식대로 실제 DOM 을 Javascript 로 직접 조작하면, 조작당한 Element 의 하위 Element 까지 모두 다시 렌더링 하게 되는데 이 때 렌더링 비용이 많이 들어 속도가 저하되는 결과를 낳습니다.
+
+이러한 문제가 개선되어 나온 것이 Virtual DOM 입니다. Virtual DOM 은 Javascript 상에서 가상 DOM 이라는 것을 따로 관리하여 가상 DOM 의 변화가 있을 경우 변화가 있는 지점만 추려내 그 부분만 실제 DOM 으로 반영시켜주는 시스템 입니다.
+
+#### Virtual DOM 동작 방식
+Virtual DOM 은 크게 ```1.Virtual DOM tree 구성``` → ```2.기존 DOM 과의 차이점 비교``` ( **diffing** ) → ```3.변경된 부분을 실제 DOM 에 반영``` ( **patching** ) 3가지의 단계로 수정을 거듭하는데, 각 단계가 다음과 같이 h.js, createElement.js, diff.js, patch.js 4가지 모듈이 협업하여 이루어지게 됩니다.
+
+![Virtual Dom Protocol](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/1-4-1.png?raw=true)
+
+1. ##### Virtual DOM 생성
+: **```h.js```** 가 모델(데이터)의 상태를 읽고 Virtual DOM tree를 구성합니다. 보통 최초에 1회 구성한 후 모델의 변화가 발생하면 그 변화에 따라 diffing 을 위해 새로운 Virtual DOM tree를 생성하게 되죠.
+
+2. ##### diffing
+: 모델의 변화로 생성된 새로운 Virtual DOM tree 를  **```diff.js```** 가 비교합니다. 이를 diffing 이라고 합니다. 비교하여 변화된 결과를 참고하여 patching 이 이루어집니다.
+
+3. ##### patching
+: 변화된 결과를 **```patch.js```** 가 전달받아 실제 DOM 에 반영합니다.  이를 patching 이라고 하는데, 상처를 메꿀 때 등 뗌빵을 메꾼다는 의미로 영어에선 patch 라는 단어를 쓰는데 그 단어의 이미지를 생각하면 쉽습니다. 단어의 의미답게 다른곳 반영없이 '그 부분만을 반영한다' 는 경향이 짙습니다. **patching 직전에는 실제 반영을 위해 실제 element 가 필요**한데,  그 실제 element 를 얻는 작업을 **```createElement.js```**가 수행합니다.
+> Patch 라는 단어를 곱씹고 또 곱씹읍시다. 이 단어, 이 단계에서 Virtual DOM 의 핵심 로직이 존재합니다. 바로, 변경되는 부분만 반영되고 **하위 Element 가 리프레쉬 되지않아 비용이 절약되는 것**이죠. 처음에는 의문점이 있었습니다. 반영은 곧 실제 DOM을 조작하는 것이니 이전과 똑같이 하위 Element 도 리프레쉬 되지 않을까 싶었죠. 그치만 patch 라는 개념을 괜히 만들었겠습니까, 내부적으로 실제 DOM 을 조작을 하되 하위 Element 까지 리프레쉬 되는 이벤트를 막는 작업을 했겠죠. 그게 뭐라고요? 우리는 알 필요 없습니다.
+
+#### Virtual DOM 예제
+아이템을 추가하고 삭제하는 간단한 예시인데요, 아까 말씀드린 4가지 모듈 각각을 실제로 함수 형태로 가져와서 Virtual DOM 을 컨트롤하고 반영하는 것을 확인할 수 있습니다. 
+
+```javascript
+var h = require('virtual-dom/h')
+var createElement = require('virtual-dom/create-element')
+var diff = require('virtual-dom/diff')
+var patch = require('virtual-dom/patch')
+
+// Actual DOM
+// var actual_dom = document.createElement('p')
+// actual_dom.innerHTML = 'Actual DOM'
+// document.body.appendChild(actual_dom)
+
+// var count = 0
+var data = ['vue.js', 'angular', "react"]
+
+// Virtual DOM
+function render(data) {
+  var lists = data.map(function (item, index) {
+    return h('li', [
+      item,
+      h('button', {
+        type: 'button',
+        onclick: function(e) {
+          // 모델 데이터 변경
+          data.splice(index, 1)
+          //  화면 뷰 업데이트
+          update();
+        }
+      }, 'delete')
+    ] )
+  })
+  var list =  h('ul', lists)
+  var input = h('input.add-content',{
+    type: 'text',
+    placeholder: 'Add Favorite Framework'
+  })
+  var add_btn = h('button.add-btn', {
+    type: 'button',
+    onclick: function(e) {
+      var input = document.querySelector('.add-content');
+      // 모델 데이버 업데이트
+      data.push(input.value);
+      // 화면 뷰 업데이트
+      update();
+      // 인풋 초기화
+      input.value = '';
+    }
+  }, 'Add')
+  var container = h('div.container', [
+    input,
+    add_btn,
+    list
+  ])
+
+  return container
+  // return h('p', 'virtual dom' + data)
+}
+
+function update() {
+  // 새로운 가상 트리를 생인
+  // var newTree = render(++count)
+  var newTree = render(data)
+  // 기존 가상 트리, 새로운 가상 트리하고 변경점이 있는지 확인
+  var patches = diff(tree, newTree)
+  // 변경사항이 발생하면 rootNode에 패치(붙인다)
+  patch(rootNode, patches)
+  tree = newTree
+}
+
+// var tree = render(count)
+var tree = render(data)
+var rootNode = createElement(tree)
+document.body.appendChild(rootNode)
+```
+이 소스 중에서 흥미로운 점은 다음과 같습니다.
+
+- **초기화 작업과 이후 작업이 다르다는것**. 비단 이 소스에만 존재하는 방식이 아니고 프로그래밍 전반에 걸쳐 존재하는 방식입니다. 최초 초기화 작업은 코드가 다를 수밖에 없습니다. 일관성있는 반복을 받아들이기 위해 만반의 준비를 하는 때 이니까요(이래서 생성자가 있는가 봅니다). 보시면 diff, patch 모듈이 빠지고 createElement 모듈, DOM API 가 쓰인것을 볼 수 있습니다. 최초생성이기 때문에 diff 할 대상이 없었고 따라서 변경사항 반영이 아닌 actual DOM 에 반영하는 native DOM API 가 쓰였던 것입니다.
+- **patch 함수에 createElement 모듈이 안 보이는것**. patch 함수가 실제 DOM 에 반영하기 전에 실제 element 를 얻기 위해 내부적으로 createElement 작업을 같이 하기 때문입니다.
+- **render() 와 update() 함수를 나눈것**. 마크업을 마치 컴포넌트화 하여 일관된 DOM 비교를 가능케하는 발판을 만든듯이 render() 함수가 그 역할을 톡톡히 수행하고 있습니다. 그 함수 속에서 Virtual DOM 의 구조를 정의할 때 어떤 이벤트가 발생하면 update() 함수를 호출할지. 개발자가 일련의 Virtual DOM 비교하는 작업을 트리거 하는 시점을 정할 수 있다는게 흥미로웠습니다. update() 함수는 우리가 배웠던 virtual DOM 관련 로직을 충실히 따르고 있고요 맨 처음에 그냥 React 만 배웠다면 이런 내부구조 절대 체험하지 못할 것입니다.
 
 </div>
 </details>
