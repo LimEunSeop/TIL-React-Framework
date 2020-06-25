@@ -532,6 +532,63 @@ document.body.appendChild(rootNode)
 - **patch 함수에 createElement 모듈이 안 보이는것**. patch 함수가 실제 DOM 에 반영하기 전에 실제 element 를 얻기 위해 내부적으로 createElement 작업을 같이 하기 때문입니다.
 - **render() 와 update() 함수를 나눈것**. 마크업을 마치 컴포넌트화 하여 일관된 DOM 비교를 가능케하는 발판을 만든듯이 render() 함수가 그 역할을 톡톡히 수행하고 있습니다. 그 함수 속에서 Virtual DOM 의 구조를 정의할 때 어떤 이벤트가 발생하면 update() 함수를 호출할지. 개발자가 일련의 Virtual DOM 비교하는 작업을 트리거 하는 시점을 정할 수 있다는게 흥미로웠습니다. update() 함수는 우리가 배웠던 virtual DOM 관련 로직을 충실히 따르고 있고요 맨 처음에 그냥 React 만 배웠다면 이런 내부구조 절대 체험하지 못할 것입니다.
 
+### React 에서의 Virtual DOM
+앞서 공부한 내용을 바탕으로, React 에서의 Virtual DOM 은 어떤 규칙을 따르는지 추론해보는 시간을 가집시다.
+```jsx
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <AppHeader />
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
+```
+React 에서는 App 클래스와 같이 컴포넌트 기반으로 마크업을 정의해 놓습니다. render() 함수에 실질적인 마크업이 정의돼 있고  이것이 Virtual DOM 비교의 발판을 마련할 것입니다.
+
+저 render  메서드가 호출되는 시점은 초기화되는 시점과 update가 이루어지는 시점 두 곳이 되겠죠. 초기화부분은 저기 보이네요. ReactDOM.render 가 초기화 작업을 수행합니다. Virtual DOM을 실제 DOM 으로 붙이는 모습이 딱 봐도 보이네요. 아까 고찰했던것 처럼 실제 DOM 에 붙여져 초기화만 이루어질 뿐 diffing 이나 patching 작업은 없겠죠.
+
+update 가 트리거 되는것은요? React 가 정해놓은 규칙을 따를 것입니다 (preview. 상태변화)
+
+### JSX
+마지막으로 다루지 못한 부분이 있습니다. 바로 XML 비스무리한 javascript 문법에 맞지 않은 정체불명의 코드. 바로 JSX(**JavaScript Syntax eXtension**) 라는 것입니다. 
+
+>JSX의 X 가 XML 을 뜻하는 것인줄 알았는데 그건 아니네요. 자바스크립트 문법을 확장했다?? 저는 처음에 조금 의문점이 생겼습니다. 저 XML 같은게 중간에 interpolation 을 위에 JS가 끼워지는 형태라 XML 으로부터 파생하여 JS 를 쓰게 한다 해서 XMLJS 라고 해야지 왜 단어가 JS 가 먼저 붙어 JS 같이 받아들이게 할까... 지금 생각해보면 일단 약자에서 알 수 있듯이 JS 익스텐션이고, 그 익스텐션이란 JS 에서 원래 저런문법 안되는데 XML 을 추가할 수 있게 '허용'을 한다, 덤으로 기존 js 문법 활용하여 interpolation 지원해줄게 라는 점에서 JSX 라고 이름을 지은것이 아닌가 예상해봅니다.
+
+저 문법이 바로 Virtual DOM tree 를 생성하게 해줍니다. 이전의 Virtual DOM 예제에서 h.js 모듈로 Virtual DOM tree 가 복잡하게 구성돼있는 것을 볼 수 있었습니다. React 에서는 **```JSX```** 라는 것을 지원하여 복잡한 구조를 시각적으로 간소화 시켜주고 이를 내부적으로 React.createElement() 라는 함수를 사용하여 Virtual DOM tree로 구성해 줍니다.
+
+JSX 는 미래 웹 패러다임중 하나인 컴포넌트 프로그래밍을 미리 경험시켜주기 위하여 React 에서만 특별히 제공되는 문법입니다. 실제 웹브라우저 에서는 절대 읽히지 않을 소스라는 것이죠. 브라우저가 해석가능한 소스는 React 에서 제공하는 Virtual DOM node 인 React.createElement() 로 생성되는 React Element 입니다. 따라서 이것으로 변환작업을 해줘야 하는데 그것을 React 프레임워크에 포함돼있는 Babel 이라는 Node 프로그램이 빌드시 수행합니다.
+
+아래의 JSX 가 Babel 을 거치면 다음과 같이 변합니다.
+
+#### 컴파일 이전
+```jsx
+const iframeWrapper = (
+  <div className="iframe-wrapper">
+    <iframe src="https://yamoo9.github.io/react-master" />
+  </div>
+)
+
+```
+
+#### 컴파일 이후
+```javascript
+var iframeWrapper = React.createElement(
+  // .iframe-wrapper
+  'div',
+  { className: 'iframe-wrapper' },
+  // .iframe-wrapper > iframe
+  React.createElement('iframe', { src: 'https://yamoo9.github.io/react-master' })
+)
+```
+
 </div>
 </details>
 
