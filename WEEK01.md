@@ -617,7 +617,7 @@ const app = (
   </div>
 )
 ```
-다만 JSX 에서 데이터가 바인딩이 되는데에는 규칙이 있으므로 자세히 살펴봐야 합니다.
+다만 JSX 를 작성하는 데에는 규칙이 있으므로 자세히 살펴봐야 합니다.
 
 #### JSX 데이터 바인딩 규칙
 데이터가 바인딩 될때는 특정 위치 특정 조건에서 예외적인 내부처리가 있기 때문에 일관성을 따지기 보단 특정 예외상황을 상식이다 생각하고 암기해야할 필요가 있습니다.
@@ -633,12 +633,12 @@ const app = (
 <abbr title={abbrs.jsx ? abbrs.jsx : null}>{headline}</abbr>
 ```
 ---
-- **인라인 스타일 등 객체 비스무리한걸 받는 속성에는 객체를 바인딩 합니다.** 다른속성으로 똑같이 바인딩 하면 적용 안됩니다. 누누히 말씀드리지만 파싱 규칙이 분명히 적용돼 있습니다.
+- **인라인 스타일 등 객체 비스무리한걸 받는 속성에는 객체를 바인딩 합니다.** style이 아닌 다른속성에 바인딩 하면 적용 안됩니다. 누누히 말씀드리지만 특정한 파싱 규칙이 분명히 적용돼 있습니다.
 ```jsx
 const figure = <figure style={{ marginTop: '1rem', marginBottom: '0.8rem' }} />
 ```
 ---
-- **JSX 에서 주석을 작성할 때는 JS 바인딩을 하여 JS를 이용할 수밖에 없는데 ```/* */ ``` 방식을 사용할 것을 권장합니다.** ```//``` 을 사용해도 되나, 닫은 중괄호까지 주석처리 되므로 닫는 중괄호가 개행이 되어야만 합니다.
+- **JSX 에서 주석을 작성할 때는 JS 바인딩을 하여 JS를 이용할 수밖에 없는데 ```/* */ ``` 방식을 사용할 것을 권장합니다.** ```//``` 을 사용해도 되나, 닫은 중괄호까지 주석처리 되므로 닫는 중괄호가 개행이 돼있어야만 합니다.
 ```jsx
 const app = (
   <React.Fragment>
@@ -651,7 +651,7 @@ const app = (
 )
 ```
 ---
-- **JSX Whitespace는 empty line 포함 각 줄의 처음과 끝에 존재하는 whitespace 는 전부 제거됩니다.** 모든 Whitespace 가 1개의 공백으로 치부되는 HTML 과는 상반되죠.
+- **JSX Whitespace는 empty line 포함 각 줄의 처음과 끝에 존재하는 whitespace 는 전부 제거됩니다.** Whitespace 의 연속이 1개의 공백으로 치부되는 HTML 과는 상반되죠.
 -----
 - **리스트 랜더링 별거 아닙니다. 그냥 JSX의 list 배열 적어주면 됩니다.** 그러나 list 는 주로 동적 반복 렌더링이기 때문에. 비슷한 모양의 element일 테니까 주로 map 메서드를 사용하여 배열을 반환하는 형태가 될 것입니다.
 ```jsx
@@ -680,7 +680,35 @@ const ReactFamilyJSX =
 ---
 - **li item 에 key 속성 설정 안해주면 경고뜹니다.** html 확인했더니 속성이 보이지는 않네요, 이 의문점 해결해야될듯 싶습니다.
 ---
-- **root 요소는 하나만 와야합니다.** 따라서 2개이상 나열하려면<React.Fragment> 로 감싸야 합니다. React.Fragment 요소는 실제DOM 에 렌더링 안 됩니다. Content 바인딩에 JSX 배열이 와도 됩니다~
+
+#### JSX 작성 규칙
+- **속성명은 camelCase 로 표기합니다.** class 속성은 JS 에 이미 예약어가 있기 때문에 className 이라고 대체합니다만 여기서 camelCase 를 지켜야합니다. tabindex 속성 또한 JSX 에서는 tabIndex 라고 표기함으로써 일관성을 살립니다.
+```jsx
+<div className="container" tabIndex="-1">
+  ...
+</div>
+```
+> 애플리케이션 접근성 향상을 위한 표준 기술 [WAI-ARIA](https://www.w3.org/TR/wai-aria-1.1) 속성 및 상태(`aria-*`)는 HTML 표준 속성과 동일한 하이픈 케이스(hypen-case) 표기법을 사용 합니다. ariaLabel 이라 하면 이상하잖아요. aria 는 네임스페이스의 성향이 짙으므로 표준과 동일하게 작성하는 것입니다.
+> ```jsx
+><div aria-label="키보드 컨트롤 도움말" role="group">
+>  ...
+></div>
+>```
+---
+- `<img/>`, `<br/>`, `<area/>` 등 **콘텐츠가 없는 요소는 반드시 닫아(`/>`) 줘야 합니다**.
+```jsx
+<div className="empty-elements">
+  <img src={image.src} alt={image.alt} />
+  <br />
+  <map>
+    {mapItems.map(item => (
+      <area shape={item.shape} coords={item.coords} href={item.href} title={item.title} />
+    ))}
+  </map>
+</div>
+```
+---
+- **root 요소는 하나만 와야합니다.** 따라서 2개이상 나열하려면 container 아무거나 혹은 <React.Fragment> 로 감싸야 합니다. React.Fragment 요소는 실제DOM 에 렌더링 안 됩니다.
 ```jsx
 const ButtonGroup = (
   <React.Fragment>
@@ -692,19 +720,6 @@ const ButtonGroup = (
     </button>
   </React.Fragment>
 )
-```
-이 방식도 가능하단 겁니다. 근데 반드시 루트의 Element 는 하나여야 합니다. 바로 ```{[``` 로 시작될 수 없다는 말입니다.
-```jsx
-<React.Fragment>
-{[
-  <button type="button" className="button is-save">
-    저장
-  </button>,
-  <button type="button" className="button is-cancel">
-    취소
-  </button>
-]}
-</React.Fragment>
 ```
 
 </div>
