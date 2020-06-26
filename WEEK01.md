@@ -598,9 +598,114 @@ var iframeWrapper = React.createElement(
 <summary>5일차 학습 - JSX 활용</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### JSX 
+React Element를 사용자가 보기좋게 쉽게 작성하기위해 제공되는 React 만의 JS 확장문법입니다.
+
+#### JSX 삽입 위치
+JSX 구문은 식(expression) 입니다.
+1. expression 이 들어갈 수 있는 곳이라면 어디든 들어갈 수 있습니다.
+2. JSX 식 자체에 데이터를 바인딩 하기 위해 원하는 위치에 중괄호로 묶어 그 안에 Javascript expression 을 채웁니다. 중괄호 안에는 무조건 Javascript의 expression 이 와야 합니다. 함수의 호출이던 3항연산자던 무엇이든 올 수 있습니다.
+3. 바인딩할 Javascript expression 에도 expression이 또 올 수  있기 때문에 JSX 를 넣을 수 있습니다.
+
+**이렇게 1~3의 과정이 무한 반복될 수가 있습니다. 다음과 같이 구성도 가능한 것이죠.**
+```jsx
+const app = (
+  <div className="app">
+    {
+      <li key={2}>b</li>
+    }
+  </div>
+)
+```
+다만 JSX 에서 데이터가 바인딩이 되는데에는 규칙이 있으므로 자세히 살펴봐야 합니다.
+
+#### JSX 데이터 바인딩 규칙
+데이터가 바인딩 될때는 특정 위치 특정 조건에서 예외적인 내부처리가 있기 때문에 일관성을 따지기 보단 특정 예외상황을 상식이다 생각하고 암기해야할 필요가 있습니다.
+
+---
+- **속성에 데이터를 바인딩 할 때는 숫자던 문자던 쌍따옴표가 필요 없습니다.** Babel 이 React Element 로 변환시켜주고 실제 DOM 에 붙여질 때 알아서 쌍따옴표가 생길 것입니다.
+```jsx
+<span class={number % 4}>test</span>
+```
+---
+- **속성에 null이 바인딩 되면 실제 DOM 에서는 그 속성이 안보일 것입니다.**
+```jsx
+<abbr title={abbrs.jsx ? abbrs.jsx : null}>{headline}</abbr>
+```
+---
+- **인라인 스타일 등 객체 비스무리한걸 받는 속성에는 객체를 바인딩 합니다.** 다른속성으로 똑같이 바인딩 하면 적용 안됩니다. 누누히 말씀드리지만 파싱 규칙이 분명히 적용돼 있습니다.
+```jsx
+const figure = <figure style={{ marginTop: '1rem', marginBottom: '0.8rem' }} />
+```
+---
+- **JSX 에서 주석을 작성할 때는 JS 바인딩을 하여 JS를 이용할 수밖에 없는데 ```/* */ ``` 방식을 사용할 것을 권장합니다.** ```//``` 을 사용해도 되나, 닫은 중괄호까지 주석처리 되므로 닫는 중괄호가 개행이 되어야만 합니다.
+```jsx
+const app = (
+  <React.Fragment>
+    {/* JSX 안에서의 주석은 이렇게 하는것을 권장합니다. */}
+    {[ // 이렇게는 됨. 그러나 뒤가 모두 주석처리되어 한 줄 구성이 불가능해짐
+      <p>a</p>,
+      <p>b</p>
+    ]}
+  </React.Fragment>
+)
+```
+---
+- **JSX Whitespace는 empty line 포함 각 줄의 처음과 끝에 존재하는 whitespace 는 전부 제거됩니다.** 모든 Whitespace 가 1개의 공백으로 치부되는 HTML 과는 상반되죠.
+-----
+- **리스트 랜더링 별거 아닙니다. 그냥 JSX의 list 배열 적어주면 됩니다.** 그러나 list 는 주로 동적 반복 렌더링이기 때문에. 비슷한 모양의 element일 테니까 주로 map 메서드를 사용하여 배열을 반환하는 형태가 될 것입니다.
+```jsx
+const reactFamily = [
+  { id: 'goqhwkay1', name: 'React' },
+  { id: 'goqhwkkc8', name: 'Redux' },
+  { id: 'goqhwkzr4', name: 'React Router' },
+]
+
+const ReactFamilyJSX =
+  // 조건 식
+  reactFamily.length > 0 ? 
+    (
+      // 조건이 참인 경우
+      <ul className="react-family">
+        {reactFamily.map(member => (
+          <li className="react-family__member">{member.name}</li>
+        ))}
+      </ul>
+    ) : 
+    (
+      // 조건이 거짓인 경우
+      <p>공부 할 React 패밀리가 없습니다.</p>
+    )
+```
+---
+- **li item 에 key 속성 설정 안해주면 경고뜹니다.** html 확인했더니 속성이 보이지는 않네요, 이 의문점 해결해야될듯 싶습니다.
+---
+- **root 요소는 하나만 와야합니다.** 따라서 2개이상 나열하려면<React.Fragment> 로 감싸야 합니다. React.Fragment 요소는 실제DOM 에 렌더링 안 됩니다. Content 바인딩에 JSX 배열이 와도 됩니다~
+```jsx
+const ButtonGroup = (
+  <React.Fragment>
+    <button type="button" className="button is-save">
+      저장
+    </button>
+    <button type="button" className="button is-cancel">
+      취소
+    </button>
+  </React.Fragment>
+)
+```
+이 방식도 가능하단 겁니다. 근데 반드시 루트의 Element 는 하나여야 합니다. 바로 ```{[``` 로 시작될 수 없다는 말입니다.
+```jsx
+<React.Fragment>
+{[
+  <button type="button" className="button is-save">
+    저장
+  </button>,
+  <button type="button" className="button is-cancel">
+    취소
+  </button>
+]}
+</React.Fragment>
+```
 
 </div>
 </details>
