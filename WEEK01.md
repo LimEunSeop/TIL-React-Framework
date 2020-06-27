@@ -69,7 +69,7 @@ asyncFn()
   .catch(error => console.error(error.message));
 ```
 #### Await 키워드
-```async``` 함수가 Promise 객체를 받아 thenable job 을 수행하기 위한 키워드로, 이를 적용하면 ```then```, ```catch``` 등의 Promise 체이닝을 하지 않아도 되는 장점이 있습니다. 주의해야할 점은 **반드시 Async 함수 안에** 있어야 합니다. 암묵적으로 Promise 를 리턴하여 Promise 체이닝을 수행해야 하기 때문이죠.
+```async``` 함수가 Promise 객체의 PromiseValue 를 받기위한 키워드로, 이를 적용하면 ```then```, ```catch``` 등의 Promise 체이닝을 하지 않아도 되는 장점이 있습니다. 주의해야할 점은 **반드시 Async 함수 안에** 있어야 합니다. 암묵적으로 Promise 를 리턴하여 Promise 체이닝을 수행해야 하기 때문이죠.
 ```javascript
 const getData = () => {
   let timeout = Math.floor(Math.random() * 2000);
