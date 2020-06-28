@@ -25,6 +25,8 @@
   ```
     A.차세대 웹 패러다임 기술을 미리 사용하도록 하기 위해 Node 패키지의 도움을 잠깐 받는것일 뿐.
   ```
+  
+- Q. 안녕하세요 선생님 복습을 쭉 해봤는데 svg import 랑 css import 가 정리가 안되었습니다. 정적리소스는 public 폴더에 들어간다고 배웠는데 svg, css 는 src 폴더에 들어가네요. react 에서 import 하기 위함의 목적이면 src폴더에 넣는 것인가요?? 만약 그렇다면 같은 목적으로 img 파일 등의 다른 정적리소스도 import 할 수 있는것인가요?
 
 ## Front-End 프레임워크 소개, React 사용법, ECMAScript 2015
 
