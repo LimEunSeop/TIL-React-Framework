@@ -653,7 +653,7 @@ const app = (
 ---
 - **JSX Whitespace는 empty line 포함 각 줄의 처음과 끝에 존재하는 whitespace 는 전부 제거됩니다.** Whitespace 의 연속이 1개의 공백으로 치부되는 HTML 과는 상반되죠.
 -----
-- **리스트 랜더링 별거 아닙니다. 그냥 JSX의 list 배열 적어주면 됩니다.** 그러나 list 는 주로 동적 반복 렌더링이기 때문에. 비슷한 모양의 element일 테니까 주로 map 메서드를 사용하여 배열을 반환하는 형태가 될 것입니다.
+- **리스트 랜더링 별거 아닙니다. 그냥 JSX의 list 배열 적어주면 됩니다.** 그러나 list 는 주로 동적 반복 렌더링이기 때문에. 비슷한 모양의 element일 테니까 주로 map 메서드를 사용하여 배열을 반환하는 형태가 될 것입니다. 배열속 무관한 요소들의 나열은 의미 없습니다. 바인딩 없이 그냥 나열해주면 되니까요.
 ```jsx
 const reactFamily = [
   { id: 'goqhwkay1', name: 'React' },
@@ -725,15 +725,3 @@ const ButtonGroup = (
 </div>
 </details>
 
----------------------------------------
-
-<details open>
-<summary>6일차 학습</summary>
-<div markdown="1">
-
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
-
-</div>
-</details>
