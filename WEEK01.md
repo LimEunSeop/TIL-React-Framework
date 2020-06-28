@@ -69,7 +69,7 @@ asyncFn()
   .catch(error => console.error(error.message));
 ```
 #### Await 키워드
-```async``` 함수가 Promise 객체의 PromiseValue 를 받기위한 키워드로, 이를 적용하면 ```then```, ```catch``` 등의 Promise 체이닝을 하지 않아도 되는 장점이 있습니다. 주의해야할 점은 **반드시 Async 함수 안에** 있어야 합니다. 암묵적으로 Promise 를 리턴하여 Promise 체이닝을 수행해야 하기 때문이죠.
+```async``` 함수가 Promise 객체의 PromiseValue 를 받기위한 키워드로, PromiseValue 를 매개변수로 하여 체이닝을 해야하는 ```then```, ```catch``` 메서드와 달리, 함수 본체의 원하는 위치에서 PromiseValue 를 받을 수 있게 됩니다. 이에따라 자연스럽게 체이닝을 하지 않게 되는데요, 저는 Async/Await 가 Promise 체이닝을 대체하는 수단이 아니라고 봅니다. 두 방식 모두 각각의 장단점이 있다고 봅니다. 섣불리 말하긴 좀 그렇지만, 체이닝은 순서를 기술하는데 가독성의 장점이 있는것 같고 Async/Await 는 값을 간단히 불러오는 데에 장점이 있다고 봅니다. 둘 다 섞어도 되겠지요. 다양한 방식이 존재하여 개발자로서 아주 흥미롭지 않을 수가 없는데요, 실무에서 개발을 해 가며 지켜보겠습니다.  주의해야할 점은 **반드시 Async 함수 안에** 있어야 합니다. 암묵적으로 Promise 를 리턴하여 다음 어딘가에서 Promise 를 받아야 하기 때문이죠.
 ```javascript
 const getData = () => {
   let timeout = Math.floor(Math.random() * 2000);
