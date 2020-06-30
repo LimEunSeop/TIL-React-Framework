@@ -280,9 +280,124 @@ class Worker extends Component {
 <summary>2일차 학습 - state & 라이프 사이클 훅</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### state
+컴포넌트의 내부에서 사용되는 말그대로 컴포넌트의 **상태**입니다. 따라서 컴포넌트를 최초 생성할 때 전달되는 일회성의 읽기전용 속성인 props 와는 달리 값을 얼마든지 변경하여 컴포넌트 자체의 상태를 변경할 수 있습니다.
+
+#### 함수형 컴포넌트에서의 state
+함수형 컴포넌트는 기본적으로 자신만의 상태와 라이프사이클 훅(LifeCycle hook)이 없습니다. 따라서 따로 변수를 만들어 state비숫한 형태로 관리합니다.
+```jsx
+const reactFamily = [
+  { id: 'goqhwkay1', name: 'React' },
+  { id: 'goqhwkkc8', name: 'Redux' },
+  { id: 'goqhwkzr4', name: 'React Router' },
+]
+
+const ReactFamilyJSX =
+  // 조건 식
+  reactFamily.length > 0 ? 
+    (
+      // 조건이 참인 경우
+      <ul className="react-family">
+        {reactFamily.map(member => (
+          <li className="react-family__member">{member.name}</li>
+        ))}
+      </ul>
+    ) : 
+    (
+      // 조건이 거짓인 경우
+      <p>공부 할 React 패밀리가 없습니다.</p>
+    )
+```
+>React v16.7 의 훅(Hook) 이라는 것을 이용하면 state 와 LifeCycle hook을 구성할 수 있다고 합니다.
+
+#### 클래스 컴포넌트에서의 state
+state 설정이 가능합니다. 2가지 방법이 있습니다.
+
+##### 1. 표준을 이용한 방법
+```jsx
+import React from 'react'
+
+class GlobalNav extends React.Component {
+  // 생성자
+  constructor(props) {
+    super(props)
+    this.state = {
+      // 컴포넌트만 접근 가능한 데이터 객체
+      activeIndex: 0,
+    }
+  }
+  // 렌더
+  render() {
+    return (
+      <nav 
+        className="global-nav"
+        dataActiveIndex={this.state.activeIndex}
+      >
+        {props.children}
+      </nav>
+    )
+  }
+}
+```
+
+##### 2. 표준명세에 제안된 문법이지만 아직 채택되지 않은 방법
+ClassField 로 정의하는 것입니다. 표준은 아니지만 Babel 의 도움을 받아 사용 가능합니다.
+```jsx
+import React, { Component } from 'react'
+
+class GlobalNav extends Component {
+  // 컴포넌트만 접근 가능한 데이터 객체
+  state = {
+    activeIndex: 0,
+  }
+  // 렌더
+  render() {
+    return (
+      <nav 
+        className="global-nav"
+        dataActiveIndex={this.state.activeIndex}
+      >
+        {props.children}
+      </nav>
+    )
+  }
+}
+```
+
+### state 교체방법
+React 에서의 객체는 기본적으로 immutable 합니다. state 도 예외는 아니며 따라서 state 수정을 위해서는 수정된 state 를 재할당 하는 방법밖에 없는데, setState() 메서드가 그 역할을 합니다.
+```jsx
+this.setState({
+  activeIndex: 10,
+})
+
+```
+필요하다면  `state`를 업데이트 한 후, 콜백(Callback) 함수를 실행하도록 처리할 수 있습니다.
+
+```jsx
+this.setState(
+  { activeIndex: 10 }, 
+  () => console.log('state.activeIndex가 업데이트 되었습니다.')
+)
+
+```
+
+또는 다음과 같이 setState() 메서드에 함수를 전달하는 문법을 사용할 수도 있습니다.
+
+```jsx
+this.setState((prevState, props) => {
+  const changedIndex = props.changeIndex * 2
+  return {
+    activeIndex: prevState.activeIndex + changedIndex,
+  }
+})
+
+// 또는
+
+this.setState(preveState => ({
+  activeIndex: prevState.activeIndex + 9,
+}))
+```
 
 </div>
 </details>
