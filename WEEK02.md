@@ -399,6 +399,54 @@ this.setState(preveState => ({
 }))
 ```
 
+### 라이프 사이클 (Life Cycle)
+컴포넌트는 **```마운팅(Mounting, 탄생) → 업데이팅(Updating, 성장) → 언마운팅(Unmounting, 죽음)```** 등 크게 세 단계의 생명주기를 갖는데, 더욱 세부적으로 특정 시간에 코드를 실행하는 다양한 라이프 사이클 훅이 제공됩니다.
+![how to use formatting toggle](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/2-2-1.png?raw=true)
+
+> 각 phase 를 숙지한 후, Pre-commit phase 가 어떤 방식으로 사용되는지 눈여겨 봅시다.
+
+#### 1. 마운팅
+다음과 같은 이유로 다음과 같은 순서대로 훅이 호출된다.
+|라이프 사이클 훅  | 설명 |
+|--|--|
+| constructor() | 컴포넌트 생성시 호출 |
+| static getDerivedStateFromProps() | props 로부터 비롯된 state 라는 뜻으로, **새로운 props** 가 들어올 경우 state 를 조정할 때 사용. **조정할 state 속성:값 객체를 리턴** |
+| render() | 컴포넌트 렌더링 시점에 호출. 하위 React 컴포넌트의 constructor() 를 호출한다. |
+| componentDidMount() | 실제 DOM 에 마운트 된 이후 시점에 호출. **DOM 조작이 가능하다** |
+
+```jsx
+class LifeCycleHook extends Component {
+  // 1.1 컴포넌트 생성
+  constructor(props) {
+    super(props)
+    console.log('컴포넌트 생성')
+  }
+  // 1.2 전달된 속성, 상태를 가져와 설정
+  static getDerivedStateFromProps(props, state) {
+    console.log('전달된 속성 및 상태를 가져와 설정')
+  }
+  // 1.3 컴포넌트 렌더링
+  render() {
+    console.log('컴포넌트 렌더링')
+    return <div />
+  }
+  // 1.4 컴포넌트 마운팅 됨
+  componentDidMount() {
+    console.log('컴포넌트 마운팅 됨')
+  }
+}
+```
+
+##### getDerivedStateFromProps 은 왜 static 메서드인가?
+이전에 componentWillReceiveProps 라는 생명주기 훅이 있었는데 사이드이펙트 관련하여 문제가 있었다고 한다. 이에 대체하여 생긴 훅인데, 사이드이펙트 보완을 위해 static 메서드로 했다고 한다. 자세한 사항은 내 레벨도 아니고 시간낭비라 일단 패스!!
+
+##### render 메서드 안에서의 자식 컴포넌트
+render 내에서 반환하는 JSX 는 React.createElement 로 생성된 자식 컴포넌트로 이루어져 있다. React.createElement 는 컴포넌트의 constructor를 호출하고 render 하는 일련의 과정을 내포하기 때문에 componentDidMount 가 호출되기 전에 자식컴포넌트의 마운트 생명주기 훅이 반복적으로 호출되는 것이다. 그렇게 모두 끝나 실제 DOM 에 마운트 된 경우, 가장 마지막 render 를 수행한 자식부터 componentDidMount 훅을 역순으로 호출하게 된다.
+
+##### componentDidMount 의 side-effect(부작용)
+componentDidMount 는 실제 DOM 생성 이후에 호출되므로 실제 DOM 에 접근 가능하다. 본래 React 는 props, state에 의존하여 사용자화면을 렌더링 하는데 그 사용의미가 있다. 오류가 있어도 React 의 손아귀에 있기 때문에 React 에 의해 paused, aborted, restarted 되기 때문에 pure하고 side-effect가 없다. 하지만 componentDidMount 내부에서 실제DOM 을 조작한다면 이는 React의 관리 영역을 벗어난 것이므로 side-effect가 생겨 예측할 수 없는 프로그램이 된다. **따라서 componentDidMount 내에서의 DOM 조작은 가급적 많이 사용하지 말고 최대한 React 차원에서 끝낼 것을 권장한다.**
+> update 주기때 render() 메서드 안에서도 실제 DOM 에 접근은 가능한것 같다. 하지만 이는 실제 DOM 에 반영되기 이전의 옛것의 DOM 이므로 render 메서드 에서 DOM 에 접근하는건 아무 의미가 없는듯 싶다. render() 취지에 맞지도 않고 그러라고 만들어지지도 않는 것이라고 생각든다.
+
 </div>
 </details>
 
