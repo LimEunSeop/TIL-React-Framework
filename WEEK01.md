@@ -28,7 +28,12 @@
   
 - Q. 안녕하세요 선생님 복습을 쭉 해봤는데 svg import 랑 css import 가 정리가 안되었습니다. 정적리소스는 public 폴더에 들어간다고 배웠는데 svg, css 는 src 폴더에 들어가네요. react 에서 import 하기 위함의 목적이면 src폴더에 넣는 것인가요?? 만약 그렇다면 같은 목적으로 img 파일 등의 다른 정적리소스도 import 할 수 있는것인가요?
   ```
-    A.
+    A.공통스타일(common.css), 접근성스타일(a11y.css), 이미지 등 변경없이 앱에서 그대로 사용될 리소스는 정적리소스로,
+    public 디렉토리에 넣고 관리합니다. 그러나 React 컴포넌트는 스타일(CSS, CSS Modules, SASS 등),
+    로직(ES6, TypeScript등), 스트럭처(JSX)과 한데 묶어 관리되므로 동적 리소스로써 대하게 되어 src 폴더에 존재합니다.
+    React 컴포넌트가 품는 CSS 는 당연히 src 폴더에서 React 컴포넌트로 관리되어야 한다는 것이죠.
+    svg 는 React 에서 컴포넌트로 다룰 수 있어서 import 하여 사용하는 것이 유용합니다.
+    예를 들어 SVG 접근성이나, 애니메이션 등 컴포넌트 안에서 조작이 용이하기 때문입니다.
   ```
 
 ## Front-End 프레임워크 소개, React 사용법, ECMAScript 2015
