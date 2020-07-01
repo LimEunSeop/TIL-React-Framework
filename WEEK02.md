@@ -553,9 +553,130 @@ class LifeCycleHook extends Component {
 <summary>3일차 학습 - 이벤트 핸들링, 컴포넌트 통신</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### 이벤트 핸들링
+React 에서의 이벤트 핸들링은 좀 특별합니다. 저번과 마찬가지로 JSX 만의 규칙이 있고 핸들러 내부에서도 특정한 규칙을 따릅니다.
+
+#### 기존과 문법적인 차이
+- 이벤트 속성 이름은 camelCase 형식으로 작성합니다. (예: ```onClick```) *이벤트가 뭐가있는지는 문서를 살펴보시오!
+- 속성 값에 문자열 대신 JSX 형식으로 메서드 참조를 연결합니다. (예: ```onClick={ onClickHandler }```)
+- 브라우저 **기본 동작을 중단하려면 반드시 ```e.preventDefault()``` 를 사용해야 합니다**. 기존의 Javascript 에서는 return false 라는 선택지도 있었습니다. React 에서는 핸들러가 기본적으로 ```SyntheticEvent``` 객체로 래핑되어 모든 브라우저에서 인터페이스가 동일하게 동작합니다. 이에따라 React 에서는 ```return false``` 구문이 통하지 않으며 ```e.preventDefault()``` 나 ```e.stopPropagation``` 을 사용하여 통일된 인터페이스를 사용해야 합니다. 조금 제한을 걸면서 모든 브라우저에서 돌아가게끔 통일한 것이죠.
+
+#### React 이벤트 핸들러 에서의 this
+기존 VanilaJS 의 이벤트핸들러에서는 내부에서 this 키워드로 이벤트가 발생한 객체에 접근할 수 있었습니다. e.target, e.currentTarget 을 쓸 수 있었는데도 편의상 this 를 많이 썼었죠. 하지만 React 에서는 이를 허용하지 않습니다. e.target, e.currentTarget 이 떡하니 있는데 왜 this 를 쓰는가! 하여 this 는 기본적으로 undefined 상태입니다. 이러한 this의 공석을 메꾸어 React 에서는 this를 컴포넌트 객체로 지정합니다.
+
+#### this 가 컴포넌트 객체인 이유
+React 에서는 이벤트 핸들러를 멤버메서드로 두는 까닭에 그렇습니다. 일단 캡슐화의 이치에 맞게 멤버로 가야하고, 의미적으로 말이 되기도 하고 더불어 이벤트 핸들러에서 state 에 접근하여 수정되면 update 라이프사이클이 실행되고. 이 모든게 자연스럽고 완벽하게 떨어지게 됩니다. 하지만 이벤트 핸들러가 멤버로 왔다고 해서 this 가 생각한 대로 바인딩 되는것이 아니죠.
+
+#### 이벤트 핸들러 this바인딩 문제 해결 방법
+이벤트 핸들러는 일반함수로써 호출되기 때문에 JS 문법에 따라 undefined 가 바인딩 됩니다. 이를 해결하는 3가지 방법을 다뤄봅시다.
+
+##### 1. this 참조 고정
+호출방식에 따라 암시적으로 유동적으로 변하던 this 를 생성자에서 .bind() 메서드를 통해 명시적으로 fix 시키거나, 이벤트핸들러 지정시 즉석으로 .bind() 를 호출하여 컴포넌트를 컴포넌트로 바인딩 시킵니다.
+
+**생성자에서 지정**
+```jsx
+import React, { Component } from 'react'
+
+class PreventBrowserDefaultAction extends Component {
+  constuctor() {
+    super()
+    // this 참조를 컴포넌트 인스턴스로 변경
+    this.handleClick = this.handleClick.bind(this)
+  }
+  handleClick(e) {
+    e.preventDefault()
+    console.log(this) // this === PreventBrowserDefaultAction {}
+  }
+  render() {
+    return (
+      <a href="https://google.com/" onClick={this.handleClick}>Google</a>
+    )
+  }
+}
+```
+
+**이벤트핸들러 지정**
+```jsx
+class PreventBrowserDefaultAction extends Component {
+  handleClick(e) {
+    // ...
+  }
+  render() {
+    return (
+      <a 
+        href="https://google.com/" 
+        onClick={this.handleClick.bind(this)}
+      >
+        Google
+      </a>
+    )
+  }
+}
+```
+
+##### 2. 함수 래핑
+화살표 익명함수가 참조되어 어휘환경을 기억하고 있기 때문에 this 가 그대로 사용될 수 있고, 그 this 를 통해 메서드를 호출하기 때문에 문제없이 바인딩된다. 대신 이벤트객체 e 는 전달해야 한다.
+```jsx
+import React, { Component } from 'react'
+
+class PreventBrowserDefaultAction extends Component {
+  handleClick(e) {
+    // ...
+  }
+  render() {
+    return (
+      <a
+        href="https://google.com/"
+        onClick={ (e) => this.handleClick(e) }
+      >
+        Google
+      </a>
+    )
+  }
+}
+```
+
+##### 3. 클래스 필도 구문 활용
+향상된 객체 표기법이 아닌, ES 표준에 제안된 클래스 필드 구문을 사용하면 this가 컴포넌트 인스턴스로 fix되나 봅니다.
+```jsx
+import React, { Component } from 'react'
+
+class PreventBrowserDefaultAction extends Component {
+  // handleClick() {
+  handleClick = (e) => {
+    e.preventDefault()
+    console.log(this) // this === PreventBrowserDefaultAction {}
+  }
+  render() {
+    return (
+      <a href="https://google.com/" onClick={this.handleClick}>Google</a>
+    )
+  }
+}
+```
+
+#### 이벤트 핸들러 인자 전달
+앞에서 배운대로 this 의 유실을 방지하면서 이벤트 핸들러에 특정인자를 전달하는 2가지 테크닉 입니다.
+
+##### 1. 래핑함수 사용
+아까전 처럼 래핑함수를 사용하는 겁니다. 함수 내부는 자유로우니까 알아서 매개변수 배치해가며 다시 호출하는 겁니다.
+```jsx
+<BaseButton
+  onClick={ (e) => this.handleClick(id, e) }
+>
+  ...
+</BaseButton>
+```
+
+##### 2. Function.prototype.bind
+이 방법 많이 써서 익숙할겁니다. this.handleClick.bind(this) 까지는 동일하나 뒤에 추가인자를 넣는건데요, 복습하자면 this 이후로 1번째 2번째 ... 인자가 되는것이고 마지막에 이벤트객체가 전달됩니다. 함수 정의부와 프로토콜을 잘 맞춰야 겠죠.
+```jsx
+<BaseButton
+  onClick={ this.handleClick.bind(this, id) }
+>
+  ...
+</BaseButton>
+```
 
 </div>
 </details>
