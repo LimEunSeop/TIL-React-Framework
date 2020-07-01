@@ -553,6 +553,7 @@ class LifeCycleHook extends Component {
 <summary>3일차 학습 - 이벤트 핸들링, 컴포넌트 통신</summary>
 <div markdown="1">
 
+
 ### 이벤트 핸들링
 React 에서의 이벤트 핸들링은 좀 특별합니다. 저번과 마찬가지로 JSX 만의 규칙이 있고 핸들러 내부에서도 특정한 규칙을 따릅니다.
 
@@ -636,7 +637,7 @@ class PreventBrowserDefaultAction extends Component {
 }
 ```
 
-##### 3. 클래스 필도 구문 활용
+##### 3. 클래스 필드 구문 활용
 향상된 객체 표기법이 아닌, ES 표준에 제안된 클래스 필드 구문을 사용하면 this가 컴포넌트 인스턴스로 fix되나 봅니다.
 ```jsx
 import React, { Component } from 'react'
@@ -658,7 +659,7 @@ class PreventBrowserDefaultAction extends Component {
 #### 이벤트 핸들러 인자 전달
 앞에서 배운대로 this 의 유실을 방지하면서 이벤트 핸들러에 특정인자를 전달하는 2가지 테크닉 입니다.
 
-##### 1. 래핑함수 사용
+##### 1.화살표 래핑함수 사용
 아까전 처럼 래핑함수를 사용하는 겁니다. 함수 내부는 자유로우니까 알아서 매개변수 배치해가며 다시 호출하는 겁니다.
 ```jsx
 <BaseButton
@@ -677,6 +678,51 @@ class PreventBrowserDefaultAction extends Component {
   ...
 </BaseButton>
 ```
+
+### 컴포넌트 통신
+React 컴포넌트는 상위 컴포넌트가 state 를 관리하지만 일반적으로 하위컴포넌트와 state 를 공유할 수 없습니다. 따라서 하위 컴포넌트가 상위 컴포넌트의 state 를 조작하려면 상위 컴포넌트의 메서드를 전달받아 callback 해야만 합니다.
+
+#### 부모 → 자식 메서드 전달
+클래스필드 문법으로 작성된 메서드를 자식 컴포넌트에 전달하면 this 에 관한 걱정 없이 자식 컴포넌트는 호출만으로 부모 컴포넌트의 state 를 바꿀 수 있게 됩니다.
+```jsx
+class ParentComponent extends Component {
+  state = {
+    message: '자식 컴포넌트의 요청을 대기 중입니다.'
+  }
+  // 2. 자식 컴포넌트에 의해 실행되는 부모 컴포넌트의 메서드
+  processRequested = (message) => {
+    // 3. 부모 컴포넌트의 상태 업데이트
+    this.setState({ message })
+  }
+  render() {
+    return (
+      <div className="parent">
+        // 1. 자식 컴포넌트에 props.receivedMethod 속성으로 메서드 전달
+        <ChildComponent receivedMethod={this.processRequested} />
+        <p>{ this.state.message }</p>
+      </div>
+    )
+  }
+}
+```
+
+#### 부모 ← 자식 메서드 실행
+```jsx
+const ChildComponent = (props) => {
+  return (
+    <button
+      type="button"
+      onClick={ () => props.receivedMethod('전달 받은 메서드 잘 사용했습니다!') }
+    >
+      부모 컴포넌트의 상태를 바꿔봅시다!
+    </button>
+  )
+}
+```
+
+### 컴포넌트 통신의 한계점
+depth 가 깊은 자손 컴포넌트가 상위 컴포넌트의 state 를 조작해야 하는 경우, 메서드 전달을 주구장창 해야한다는 단점이 존재합니다. 이를 보완하여 데이터를 한번에 전달할 수 있는 Context API 가 생겨났지만, 컴포넌트의 재사용성이 낮아진다는 단점이 존재하여 Redux 라는 상태관리 시스템을 사용하도록 권장하고 있습니다. Redux 는 모든 컴포넌트가 접근할 수 있도록 store라는 한곳에서 통합적으로 상태를 관리하며 어디서든 업데이트요청을 받아 필요한 곳에 업데이트를 수행할 수 있습니다.
+
 
 </div>
 </details>
