@@ -550,7 +550,20 @@ class LifeCycleHook extends Component {
 ---------------------------------------
 
 <details open>
-<summary>3일차 학습</summary>
+<summary>3일차 학습 - 이벤트 핸들링, 컴포넌트 통신</summary>
+<div markdown="1">
+
+### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
+- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
+- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+
+</div>
+</details>
+
+---------------------------------------
+
+<details open>
+<summary>4일차 학습</summary>
 <div markdown="1">
 
 ### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
