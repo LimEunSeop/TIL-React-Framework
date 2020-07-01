@@ -447,6 +447,103 @@ render 내에서 반환하는 JSX 는 React.createElement 로 생성된 자식 �
 componentDidMount 는 실제 DOM 생성 이후에 호출되므로 실제 DOM 에 접근 가능하다. 본래 React 는 props, state에 의존하여 사용자화면을 렌더링 하는데 그 사용의미가 있다. 오류가 있어도 React 의 손아귀에 있기 때문에 React 에 의해 paused, aborted, restarted 되기 때문에 pure하고 side-effect가 없다. 하지만 componentDidMount 내부에서 실제DOM 을 조작한다면 이는 React의 관리 영역을 벗어난 것이므로 side-effect가 생겨 예측할 수 없는 프로그램이 된다. **따라서 componentDidMount 내에서의 DOM 조작은 가급적 많이 사용하지 말고 최대한 React 차원에서 끝낼 것을 권장한다.**
 > update 주기때 render() 메서드 안에서도 실제 DOM 에 접근은 가능한것 같다. 하지만 이는 실제 DOM 에 반영되기 이전의 옛것의 DOM 이므로 render 메서드 에서 DOM 에 접근하는건 아무 의미가 없는듯 싶다. render() 취지에 맞지도 않고 그러라고 만들어지지도 않는 것이라고 생각든다.
 
+#### 2. 업데이팅
+```props``` 또는 ```state``` 가 변경될 경우 다음과 같은 순서로 발생합니다.
+
+|라이프사이클 훅| 설명 |
+|--|--|
+| static getDerivedStateFromProps() | render() 호출직전에 호출. 마운트 표 설명 다시 정리해야될듯 |
+| shouldComponentUpdate() | 컴포넌트 렌더링 이전에 호출 (최적화를 위해 update 할지안할지 결정가능) |
+| render() | 컴포넌트 렌더링 |
+| getSnapshotBeforeUpdate() | 컴포넌트 업데이트 전 스냅샷 가져와서 리턴하여 componentDidUpdate()에 전달. **실제DOM 접근가능** |
+| componentDidUpdate() | 컴포넌트 업데이트 후 호출. **실제DOM 접근가능** |
+
+```jsx
+class LifeCycleHook extends Component {
+  // 2.1 속성, 상태 설정
+  static getDerivedStateFromProps(props, state) {
+    console.log('(업데이트) 전달된 속성 및 상태를 가져와 설정')
+    return null
+  }
+  // 2.2 업데이트 할 예정
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('성능 최적화 용도로 사용 됨')
+    return true // false를 반환할 경우 컴포넌트 렌더링이 취소
+  }
+  // 2.3 렌더링
+  render() {
+    console.log('(업데이트) 렌더링')
+    return <div />
+  }
+  // 2.4 DOM에 커밋되기 전
+  getSnapshotBeforeUpdate(nextProps, nextState) {
+    console.log('DOM에 커밋되기 전 스냅샷 가져오기')
+    return null // 여기에서 스냅샷객체 리턴
+  }
+  // 2.5 업데이트 됨
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log('업데이트 됨')
+  }
+}
+```
+> getSnapshotBeforeUpdate 는 업데이트 되기 전의 DOM 에 접근하는 것입니다. 스냅샷이라는것이 이것과 관련있는 것일까요? 스냅샷 활용이 이쪽에서 이루어지는 것일까요??
+
+#### 3. 언 마운팅
+컴포넌트가 **DOM에서 제거될 때** 실행되는 훅입니다.
+
+|라이프 사이클 훅| 설명 |
+|--|--|
+| componentWillUnmount() | 컴포넌트 제거 예정 시점에 호출 |
+```jsx
+class LifeCycleHook extends Component {
+  // 3.1 DOM에서 언 마운트 되어 제거되기 직전에 실행
+  componentWillUnmount() {
+    console.log('DOM에서 언 마운트 되어 제거되기 직전에 실행 됨')
+  }
+}
+```
+부모 컴포넌트에서 rendering 수행 후 diffing 을 통해 자식컴포넌트가 제거되는것이 결정되면 그 자식컴포넌트의 componentWillUnmount 훅이 실행됩니다. (먼저 getSnapshotBeforeUpdate이 실행되긴 합니다.) 그 후 부모가 DOM 업데이트를 마치면 componentDidUpdate 훅이 실행되는 것입니다. Unmount 는 Mount 의 반대어로, 마찬가지로 실제 DOM 과 관련돼있습니다. 따라서 Update 되기 전 마지막에 실행되는 것입니다. 이 시점에서 다시 생각이 나네요. getSnapshotBeforeUpdate 가 말 그대로 왜 스냅샷이라는 이름을 붙였는지요.
+
+#### 4. 오류 처리
+컴포넌트 렌더링, 라이프 사이클 훅이 실행될 때 오류가 발생한 경우 호출됩니다.
+|라이프 사이클 훅| 설명 |
+|--|--|
+| static getDerivedStateFromError() | 자손 컴포넌트 에러 발생시 호출되어 state 수정 |
+| componentDidCatch() | 자손 컴포넌트 에러 발생시 호출되어 에러정보를 알 수 있다. |
+
+```jsx
+class LifeCycleHook extends Component {
+  state = { hasError: false }
+  static getDerivedStateFromError(error) {
+    return { hasError: true }
+  }
+  // 자식 컴포넌트의 오류를 throw한 후 실행
+  componentDidCatch(error, info) {
+    // info 매개변수:
+    //  어떤 컴포넌트가 오류를 발생시켰는지에 대한 정보를 가진 componentStack 속성을 가진 객체
+
+    // Example "componentStack":
+    //   in ComponentThatThrows (created by App)
+    //   in ErrorBoundary (created by App)
+    //   in div (created by App)
+    //   in App
+    logComponentStackToService(info.componentStack)
+  }
+  render() {
+    if (this.state.hasError) {
+      return <h1>오류가 발생했습니다.</h1>
+    }
+    return <div />
+  }
+}
+```
+
+##### static getDerivedStateFromError(error)
+자손 컴포넌트 에러 발생시 state 로 에러발생여부 등을 변경하여 이 속성을 render() 메서드에 적용하여 렌더링을 달리하는 데 사용될 수 있습니다.
+
+##### componentDidCatch(error, info)
+마찬가지로 자손 컴포넌트 에러 발생시 호출되는데 에러정보를 가진 info 매개변수를 받을 수 있습니다. info 안에서 에러 스택을 조회할 수 있습니다.
+
 </div>
 </details>
 
