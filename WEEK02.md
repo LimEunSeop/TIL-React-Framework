@@ -733,9 +733,107 @@ depth 가 깊은 자손 컴포넌트가 상위 컴포넌트의 state 를 조작�
 <summary>4일차 학습 - Context API</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### Context API
+기존의 React DOM 에서는 상위 컴포넌트가 하위 컴포넌트로 데이터를 전달할 때 계층을 타고 목적지 컴포넌트에 전달될 때까지 일일히 자식컴포넌트에게 전달할 수밖에 없었는데요, Context API 라는 기술은 Context 라는 데이터 관리 모듈을 따로 바깥에 빼서 어느 컴포넌트에서든지 바로 접근이 가능하도록 해줍니다.
+
+#### 기본 사용법
+1. **React.createContext() 함수로 컨텍스트를 만듭니다.**
+```jsx
+// AuthContenxt.js
+import React from 'react'
+
+export const authContext = {
+  isAuth: false,
+  signIn = () => { ... }
+}
+
+export default React.createContext(authContext)
+```
+첫번째 인자로, 컨텍스트가 관리하는 데이터의 default 값을 설정합니다.
+> 다른 모듈에서 불러올 수만 있다면 어떤 수단으로 만들어도 상관없습니다.
+
+2. **```<컨텍스트.Provider>``` Element로 데이터를 전달받고자 하는 자손 컴포넌트를 감싼 후, ```value``` Property 에 전달하고 싶은 값을 세팅해줍니다.**
+```jsx
+// App.js
+import AuthContext from './context/AuthContext'
+
+class App extends React.Component {
+  state = {
+    authentification: true
+  }
+  logIn = () => {
+    // 로그인 ... 
+  }
+  render() {
+    return (
+      <AuthContext.Provider 
+        value={{ isAuth: this.state.authentification, signIn: this.logIn }}
+      >
+        <MenuBar />
+      </AuthContext.Provider>
+    )
+  }
+}
+```
+내가 전달하고 싶은 state 가 지금 보고있는 컴포넌트에 존재한다? 그럼 그 자리에서 ```<컨텍스트.Provider>``` 로 감싸는 작업을 치는 것이죠.
+> Provider 가 있을 필요는 없습니다. React.createcontext() 할 때 세팅된 기본값만 열람될 뿐이죠.
+
+3. **데이터를 받고자 하는 컴포넌트에서 ```<컨텍스트.Consumer>``` 엘리먼트를 사용해줍니다.**
+```jsx
+// SignIn.js
+import AuthContext from '../context/AuthContext'
+
+const SignIn = () => (
+  <AuthContext.Consumer>
+    {
+      ({isAuth, signIn}) => isAuth ? 
+        <div className="signed">로그인 됨</div> : 
+        <button type="button" onClick={() => signIn}>로그인</button>
+    }
+  </AuthContext.Consumer>
+)
+```
+```<컨텍스트.Consumer>``` 엘리먼트는 ```props.children``` 를 반드시 정의해줘야 합니다. ```props.children``` 가 Provider 로부터 설정되었던 context value 를 인자로 받고 실행하여 값을 리턴해주는 콜백메서드 이기 때문이죠. 실질적으로 이 전달인자로써 데이터를 받게 되는것이고, 콜백에서 이것을 잘 활용하여 JSX 를 리턴해줌으로써 하위컴포넌트에서 바로 데이터를 불러들어오는 꼴이 되는것입니다. 이래서 컴포넌트의 재사용성이 깨질 수밖에 없나봅니다.
+
+#### Context Type 를 활용한 쉬운 활용법
+Provider 의 활용은 그대로 두고, Consumer 측에서 Consumer Element 사용하지 않고, 컴포넌트 클래스의 ```contextType``` static 속성에 컨텍스트를 할당하면 ```this.context``` 를 통해 context value 에 손쉽게 접근할 수 있습니다.
+```jsx
+// SignIn.js
+import AuthContext from '../context/AuthContext'
+
+class SignIn extends React.Component {
+  static contextType = AuthContext
+  render() {
+    const { isAuth, signIn } = this.context
+    return (
+      {
+        isAuth ? 
+          <div className="signed">로그인 됨</div> : 
+          <button type="button" onClick={() => signIn}>로그인</button>
+      }
+    )
+  }
+}
+```
+대신 this.context 를 한 컨텍스트만이 점유하므로 한 컴포넌트당 한 컨텍스트에 한정되고요, 나머지 구성은 Consumer 를 사용해야될 것입니다. 복수 컨텍스트 사용시 Consumer와 Context Type를 섞어쓸지, 일종의 깔끔함을 위해 Consumer 만을 사용할지는 개발자 마음이 될것 같습니다.
+
+#### 한 요소에 2개이상 컨텍스트의 값을 받는법
+이런식으로 Consumer 를 중첩하면 된다.
+```jsx
+// 여러 context의 값을 받는 컴포넌트
+function Content() {
+  return (
+    <ThemeContext.Consumer>
+    {theme => (
+      <UserContext.Consumer>
+      {user => (
+        <ProfilePage user={user} theme={theme} />
+      )}
+      </UserContext.Consumer>
+    )}
+    </ThemeContext.Consumer>  );
+}
+```
 
 </div>
 </details>
