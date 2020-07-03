@@ -52,7 +52,7 @@ function BaseButton(props) {
 
 export default BaseButton
 ```
-> props.children은 현재 컴포넌트가 사용될 때 자식으로 또다른 Element 를 정의했을 경우 세팅됩니다.
+> props.children은 현재 컴포넌트가 상위에서 사용될 때 자식으로 또다른 Element 를 정의했을 경우 세팅됩니다.
 
 ### 클래스 컴포넌트
 React.Component 를 상속한 클래스이며, render() 메서드로 React 요소를 반환합니다. props 는 생성자에 의해 this.props에 세팅됩니다.
