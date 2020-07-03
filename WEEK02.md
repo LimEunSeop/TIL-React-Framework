@@ -4,14 +4,46 @@
 
 ---------------------------------------
 ## 2주차 질문
-- Q. 여기에 질문내용을 작성합니다.
+- Q. svg 접근성 해결법에 대한 궁금증 (svg 태그 안에 title 태그 정의하면 안되는지)
   ```
-    A.여기에 답변 내용을 작성합니다.
+    A.말씀하신 것처럼 SVG > title 콘텐츠 값을 변경해서 이해 가능한 내용을 입력할 수 있습니다.
+다만 예시의 경우 해당 아이콘(SVG)은 하드 코딩된 경우인데.. 
+
+만약 하드코딩 형태가 아니라 이미지 링크 형태로 SVG 파일을 아이콘으로 사용한다면? 
+매번 SVG 이미지 파일을 열어 title 콘텐츠 값을 변경해야 하는 문제. 그리고 문맥 상 다른
+콘텐츠로 해석되어야 할 경우 아이콘을 재사용 하기 어려운 문제를 맞게 됩니다.
+
+즉, SVG가 이미지 링크 또는 하드 코딩 등 다양한 방법으로 사용될 수 있고, 문맥의 흐름 상
+내용이 바뀔 가능성이 있는 경우라면 title 콘텐츠를 고정하기 어렵습니다.
+
+물론, 이러한 경우 철저히 대응해 접근성을 준수하겠다고 하는 개발자라면 본인의 책임 하에
+SVG의 title 콘텐츠를 변경해도 됩니다. ^ㅡ^
+
+하지만 그것이 쉽지 않다면? 접근성 있는 감춤 콘텐츠 처리 방법을 사용하거나,
+aria-label을 사용해 스크린 리더에 읽히는 콘텐츠를 덮어쓸 수 있습니다.
+이 방법을 사용하면 SVG 내부의 title을 건드리지 않고도 콘텐츠를 유연하게 관리할 수 있습니다.
+
+
+<button type="button">
+    <svg
+        aria-label="프로젝트 공유하기"
+        width="20px" height="22px"
+        viewBox="0 0 20 22"
+        xmlns="http://www.w3.org/2000/svg"
+    > ... </svg>
+</button>
   ```
 
-- Q. 여기에 질문내용을 작성합니다.
+- Q. 선생님 img 의 alt 속성 대신 hidden span 의 사용 철학은 무엇이죠? 이번엔 바로 타임 링크 걸었습니다 ㅋㅋ
+
+https://www.youtube.com/watch?v=L1YLFYlkGnc&feature=youtu.be&t=4m47s
   ```
-    A.여기에 답변 내용을 작성합니다.
+    A.사용 철학이라기 보다는 ^^;
+이미지의 대체 텍스트로 콘텐츠를 넣어도 되는데요. 
+
+다만 그런 경우 인디케이터 위에 마우스가 올라가거나 포커싱 되었을 때 명시적인 툴팁으로 콘텐츠를 보여줘야 접근성이 향상 되겠죠.
+
+그런 경우 span을 사용해 감춤 처리하되, 툴팁으로 표시하는 방법에 활용할 수도 있어요. 하지만 그런 경우가 아니라면 alt 속성 값을 적절히 주어 접근성을 준수할 수도 있습니다 ^^
   ```
 
 ## React 컴포넌트, 이벤트 처리, 컴포넌트 통신, 접근성
@@ -844,9 +876,266 @@ function Content() {
 <summary>5일차 학습 - React 접근성(A11Y)</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### React a11y
+접근성을 준수하는 이유는 모든 사용자를 고려하기 위함입니다.
+
+제가 접근성에 욕심이 있는것은 결국 한가지 목적으로 귀결되는것 같습니다. 문서 작성자로서 이왕 작성할 것 대충 작성하지 않고 완벽하게 작성하고 싶을 뿐 입니다. HTML 이 직접적으로 화면에 보이지 않는다고 해서 천시되는 경향이 있습니다. 하지만 우리는 배워왔지 않습니까, HTML은 골격을 담당한다고요. 골격을 담당한다고 배웠으면서 대충짜고 천시한다는 것은 매우 모순적이라고 생각이 듭니다. 그냥 열심히 완벽하게 짜고싶습니다. 이러한 고민이 무언가의 예술적인 감성을 자극하여 더 재미를 느끼곤 합니다. 또한 이러한 노력은 배신을 하지 않는다 굳게 믿습니다.
+
+단 한가지, 접근성을 준수하는것 자체를 즐기고 노력을 기울일 것입니다. 그에대한 보상은 자동적으로 따라올 것입니다. 다만 아직 제 스스로 검증하지 못한 것은 정석을 유지한다고 해서 CSS나 JS 인터렉션 소스를 짤 시 유지보수가 잘 되는 코드가 작성될 수 있냐는 것입니다. 이에 대해서도 제 스스로 경험해가며 꾸준히 고민을 이어나갈 것입니다.
+
+#### 헤딩 레벨 (Heading Level)
+문서의 개요가 작성이 되는 아주 중요한 요소입니다. 이를 제대로 준수하지 않은 사이트는 목차가 없는 책이나 마찬가지 입니다.
+> 시력이 불편한 사람이 로터 기능을 사용하면 Heading 의 depth 를 선택하여 Heading 을 빠르게 훑어볼 수 있습니다.
+
+##### Tenon-UI 사용
+[Tenon-UI](https://www.tenon-ui.info/headings/) 모듈을 사용하면 h1,h2,h3 의 고민없이 depth 에 따른 order 를 자동적으로 구성해줍니다. 개발자는 개요 도식화만 완벽히 하면 됩니다.
+```jsx
+{ /* 제목: 'kakako TV' */ }
+<Heading.H>kakao TV</Heading.H>
+{ /* [ 하위 섹션 바운더리 ] */ }
+<Heading.LevelBoundary>
+  { /* 제목: '검색' */ }
+  <Heading.H>검색</Heading.H>
+  { /* [ 하위 섹션 바운더리 ] */ }
+  <Heading.LevelBoundary>
+    { /* 제목: 'kakako TV 홈 메뉴' */ }
+    <Heading.H>kakao TV 홈 메뉴2</Heading.H>
+    { /* 제목: '인기 PD 동영상' */ }
+    <Heading.H>인기 PD 동영상</Heading.H>
+    { /* 제목: '카테고리 별 인기 동영상 슬롯' */ }
+    <Heading.H>카테고리 별 인기 동영상 슬롯</Heading.H>
+    { /* [ 하위 섹션 바운더리 ] */ }
+    <Heading.LevelBoundary>
+      { /* 제목: '예능 최신 인기 동영상 바로가기' */ }
+      <Heading.H>예능 최신 인기 동영상 바로가기</Heading.H>
+      { /* 제목: '드라마 최신 인기 동영상 바로가기' */ }
+      <Heading.H>드라마 최신 인기 동영상 바로가기</Heading.H>
+    </Heading.LevelBoundary>
+  </Heading.LevelBoundary>
+</Heading.LevelBoundary>
+{ /* 실습 영역: 끝  */ }
+```
+
+##### tota11y 크롬 익스텐션 사용
+이를 사용하면, 사이트의 접근성을 검사해보고 오류를 발견해볼 수 있습니다.
+
+#### 히든 콘텐츠 (Hidden Contents)
+시각적으로 직관적으로 인식될 수 있는 콘텐츠가 시각이 배제된 스크린리더 에서 접근성이 엉망으로 인식될 수가 있습니다.
+이처럼 화면에 보이진 않지만 스크린 리더에서 읽혀야하는 콘텐츠가 있습니다.
+
+이를 처리하기 위해서는, 히든 콘텐츠가 스크린리더에 올바르게 읽혀지도록 하는 작업이 필요합니다.
+
+다음은 스크린리더가 인식할 수 없는 잘못된 숨김처리 예시입니다.
+```html
+<div style="display: none"> ... </div>
+<div style="visibility: hidden"> ... </div>
+<div hidden> ... </div>
+```
+이러한 속성은 스크린리더로 하여금 읽지 마라고 제대로 명시하는 꼴이 돼버립니다. 이를 해결하기 위해선 trick 이 필요합니다. 널리 통용되는 a11y-hidden CSS 클래스 스타일링 입니다.
+
+##### CSS a11y-hidden Class 사용
+```css
+.a11y-hidden {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+```
+보시면 스크린리더에게 읽히기 위해 부단한 노력을 하고있는걸 알 수 있습니다. 일단 nomal-flow 를 벗어나기 위해 absolute position 을 사용했고, clip 속성으로 rect 영역 너비를 0으로 잘랐습니다. 그리고 width, height 를 1로 주고 margin 을 -1로 줌으로써 실질적으로 차지하는 너비가 0이 되도록 퉁쳤습니다. width나 height 를 0으로 주면 되지 않느냐 의문이 생길 수 있지만 이는 조금이라도 걸림돌이 되어 요소가 인식되지 않을 수도 있습니다. overflow: hidden 을 통해서도 확실히 너비차지 안하도록 설정했네요. 이를 이제 class 속성에 적용시키면 됩니다.
+
+##### React A11yHidden 컴포넌트 사용
+React 에서는 Hidden Contents 처리를 위해 A11yHidden 래핑 컴포넌트 사용을 고려해볼 수 있습니다. a11y-hidden 을 안쓰고 굳이 A11yHidden 컴포넌트를 쓰는 이유는 컴포넌트에 정의된 기능을 사용함으로써 접근성에 대한 도움을 받을 수 있기 때문입니다. (Ex. focusable 속성을 위해 포커싱되면 일시적으로 visible하게 가능)
+```jsx
+<A11yHidden tag="button" focusable className="button"> ... </A11yHidden>
+```
+
+##### svg 아이콘이 들어간 버튼 오류 바로잡기
+svg내에있는 title 태그의 알수없는 문자를 읽습니다. 이를 해결하기 위해 svg의 속성에 aria-hidden="true" 를 줌으로써 스크린리더 해석을 배제하고 위에 A11yHidden span 태그를 간단히 추가합니다.
+
+###### 오류
+```html
+<button>
+  <i class="_IQY7TzdLHKX3-BKPDNYKF"></i>
+  <svg
+    width="20px"
+    height="22px"
+    viewBox="0 0 20 22"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title>ic_share_B</title>
+  </svg>
+</button>
+```
+
+###### 해결 결과
+```jsx
+<button>
+  <A11yHidden>프로젝트 공유하기</A11yHidden>
+  <svg
+    aria-hidden="true"
+    width="20px"
+    height="22px"
+    viewBox="0 0 20 22"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+  </svg>
+</button>
+```
+svg 내부의 title 태그를 수정하면 좋겠지만 우리가 접하는 svg는 대부분 파일링크 형태입니다. 따라서 aria-hidden로 스크린리딩을 막거나 aria-label 로 스크린리딩을 덮어쓰는 방법밖엔 없습니다. 아니면 svg arid-hidden 후 sibling 으로 A11yHidden 컴포넌트 둘 수도 있습니다.
+
+#### 버튼 컴포넌트 (Button Component)
+~~a[href=#], div, img로 버튼을 마크업하지 맙시다.~~ 버튼이라고 생각드는건 **무조건 버튼**으로만 작성해야 합니다. **스크린 리더는 요소의 종류를 읽기 때문** 입니다. 또한 **focusing 접근성을 위해서도 필요합니다!!!**
+
+##### 버튼 마크업의 정석
+```html
+<button type="button">
+  <img src="..." alt>
+  <span class="a11y-hidden">더워도 걱정 없는 아이스 립 파우치</span>
+</button>
+```
+필요한 경우 아이콘이나 img를 넣고, span 으로 버튼 설명을 넣습니다. (글자만으로 이루어진 버튼이라면 span를 숨김처리하진 않겠죠.) img 의 alt 속성을 쓰지 않는 이유는 혹시라도 생길 툴팁에 대한 변수를 생각해서 그렇습니다. **img 태그가 쓰이는 상황에서는 alt 의 내용을 따로 element 로 빼야할지 생각하면서 작업해야겠습니다.**
+
+
+##### Carosel Component
+다음과 같이 Navigating(prev, next), Play&Pause 를 관장하는 Control 컴포넌트, 현 컨텐츠의 위치 표시 및 원하는 위치 바로탐색 기능을 제공하는 Indicator 컴포넌트로 구성돼있는 컴포넌트로, 컨텐츠의 SLIDE 기능을 담당합니다.
+![Carosel Component](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/2-5-1.png?raw=true)
+
+##### Control 컴포넌트
+Navigating(prev, next), Play&Pause 를 관장하는 컴포넌트입니다. button Native element 로 스트럭쳐 구성하고 정석대로 작성된 것을 볼 수 있습니다.
+```jsx
+import React, { Component } from 'react'
+import A11yHidden from './components/A11yHidden'
+
+const Control = (props) => {
+  const c_name = props.prev ? 'btn-prev' : props.next ? 'btn-next' : ''
+  return (
+    <button
+      type="button"
+      className={c_name}
+      onClick={props.onClick}
+    >
+      <A11yHidden>{ props.children }</A11yHidden>
+    </button>
+  )
+}
+
+export default Control
+```
+
+##### Indicator 컴포넌트
+Navigating(prev, next)을 관장하는 컴포넌트입니다. 이것도 마찬가지로 button 엘리먼트를 정석적으로 사용하여 키보드 접근성 준수되고 스크린리더의 라벨읽기 접근성도 준수된 것을 볼 수 있습니다.
+```jsx
+import React, { Component } from 'react'
+import A11yHidden from './components/A11yHidden'
+import placeholder from '../assets/placeholder-indicator.jpg'
+
+class Indicator extends Component {
+  state = { isActive: false }
+  render() {
+    const { isActive } = this.state
+    const { image, label } = this.props
+    return (
+      <div className={`indicator ${isActive ? 'is-active' : ''}`}>
+        <button type="button" className="btn-indicator">
+          <img src={ image || placeholder } alt />
+          <A11yHidden>{label}</A11yHidden>
+        </button>
+      </div>
+    )
+  }
+}
+
+export default Indicator
+```
+> placeHolder 테크닉 꿀팁이다. 그리고 다들 괜찮은 소스인데 이 indicator 가 어떻게 동작하여 is-active 가 스위칭되는지 크게 감이 안서는데 이에대한 활용을 나중에 꼭 다뤄보도록 하자.
+
+##### Indicators 컴포넌트
+Indicator 들을 map으로 생성하여 이렇게 배열로 관리합니다.
+```jsx
+import React, { Component } from 'react'
+import Indicator from './Indicator'
+
+const Indicators = (props) => (
+  props.indicators.map(indicator => (
+      <Indicator
+        key={indicator.id}
+        image={indiator.image}
+        label={indicator.label}
+      />
+    )
+  )
+)
+
+export default Indicators
+```
+
+#### React 에서 사용에 주의가 필요한 HTML 표준
+컴포넌트 프로그래밍 에서는 HTML 코드를 한 눈에 보기 힘들어 표준을 준수하지 못하는 실수가 발생하곤 합니다. 주로 list item 과 list 컴포넌트 사이에서 그러한데요, 주의해야할 표준을 다시 한번 짚어봅시다.
+
+```html
+<!-- 1 -->
+<ul>
+  <li>리스트 아이템 요소는 리스트(ul 또는 ol) 요소 내부에만 배치되어야 합니다.</li>
+</ul>
+ 
+<ol>
+  <li>리스트 아이템 요소는 리스트(ul 또는 ol) 요소 내부에만 배치되어야 합니다.</li>
+</ol>
+ 
+ 
+<!-- 2 -->
+<dl>
+  <dt>설명 리스트의 Key 내용은 dt 요소에</dt>
+  <dd>설명 리스트의 value 내용은 dd 요소 안에 위치 해야 합니다.</dd>
+  <div>
+    <dt>필요한 경우, 선택적으로 dt, dd를 감싸는 div 요소를</dt>
+    <dd>dl 안에서 사용할 수 있도록 HTML 5.2에서 개정되었습니다.</dd>
+  </div>
+</dl>
+ 
+ 
+<!-- 3 -->
+<figure>
+  <figcaption>피규어를 설명하는 내용은 반드시 figure 요소 안에 배치되어야 합니다.</figcaption>
+</figure>
+ 
+ 
+<!-- 4 -->
+<table>
+  <caption>table의 첫번째 자식 요소로 배치되어야 합니다.</caption>
+  <tr>
+    <th>tr 요소 내부에 배치되어야 합니다.</th>
+  </tr>
+  <tr>
+    <td>tr 요소 내부에 배치되어야 합니다.</td>
+  </tr>
+</table>
+```
+
+#### 접근성 자동 검사
+```react-axe``` 패키지 설치 후 다음과 같이 설정을 담당하는 엔트리파일 index.js 에 세팅해 놓으면 라이브러리로부터 접근성에 대한 도움을 많이 받을 수 있습니다.
+
+##### 설치
+```npm i react-axe```
+
+##### 적용
+```jsx
+import React from 'react'
+import ReactDOM from 'react-dom'
+import axe from 'react-axe'
+
+if (process.axe.NODE_ENV !== 'production') {
+ axe(React, ReactDOM, 1000)
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
+```
 
 </div>
 </details>
