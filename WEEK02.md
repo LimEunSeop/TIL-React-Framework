@@ -841,7 +841,7 @@ function Content() {
 ---------------------------------------
 
 <details open>
-<summary>5일차 학습</summary>
+<summary>5일차 학습 - React 접근성(A11Y)</summary>
 <div markdown="1">
 
 ### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
