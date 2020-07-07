@@ -211,7 +211,7 @@ render() {
 }
 ```
 
-index.js 엔트리 파일에서 개발속도를 위해 serviceWorker unregister 돼있는데 배포용 & PWA 적용하려면 register 해야함. 우리는 node 환경에서 개발중이라 process.env.NODE_ENV 같은코드 사용 가능. ES10 표준으로 제안된 동적 import 기능으로 상단 import 필요없이 조건문 안에서 비동기로 한큐에 처리 가능.
+index.js 엔트리 파일에서 개발속도를 위해 serviceWorker unregister 돼있는데 배포용 & PWA 적용하려면 register 해야함. **우리는 node 환경에서 Web Browser 에 돌아갈 스크립트가 웹에서 잘 돌아가도록 서포트하는 프로그램을 개발하는 셈이라** node에서 쓰는 process.env.NODE_ENV 같은코드 사용 가능. ES10 표준으로 제안된 동적 import 기능으로 상단 import 필요없이 조건문 안에서 비동기로 한큐에 처리 가능.
 ```javascript
 // PWA 웹앱 등록할 때 사용
 if (process.env.NODE_ENV === 'production') {
