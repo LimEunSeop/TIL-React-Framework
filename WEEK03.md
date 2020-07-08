@@ -17,7 +17,7 @@
 ## React 훅, 폼, 고차 컴포넌트, 스타일 컴포넌트 그리고 미니 프로젝트 {E1}
 
 <details open>
-<summary>1일차 학습</summary>
+<summary>1일차 학습 - Mini Project {E0}</summary>
 <div markdown="1">
 
 ### React Mini Project {E0}
@@ -226,7 +226,7 @@ if (process.env.NODE_ENV === 'production') {
 ---------------------------------------
 
 <details open>
-<summary>2일차 학습</summary>
+<summary>2일차 학습 - 고차 컴포넌트(HOC)</summary>
 <div markdown="1">
 
 ### 고차 컴포넌트 (HOC)
@@ -273,7 +273,20 @@ export default withLecturerContext(Lecturer)
 ---------------------------------------
 
 <details open>
-<summary>3일차 학습</summary>
+<summary>3일차 학습 - 폼 컨트롤</summary>
+<div markdown="1">
+
+### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
+- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
+- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+
+</div>
+</details>
+
+---------------------------------------
+
+<details open>
+<summary>4일차 학습</summary>
 <div markdown="1">
 
 ### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
