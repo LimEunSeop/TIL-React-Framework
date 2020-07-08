@@ -276,9 +276,165 @@ export default withLecturerContext(Lecturer)
 <summary>3일차 학습 - 폼 컨트롤</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### 폼 컨트롤
+앞으로 다룰 폼 컨트롤 이라는 것을 다룰건데요, 컨트롤 이라는 용어를 처음 접합니다. 이 뜻을 잠시 짚고 가자면, input 요소와 textarea 같은 폼 엘리먼트가 React 에 결합되어 React 의 통제를 받는 것을 의미합니다. 이 통제를 받는 컴포넌트를 Controlled Component 라고 하지요. 폼 컨트롤 같은 경우에는 React 에 의해 사용자의 입력데이터가 업데이트 되고 유효성이 체크됩니다.
+
+#### Uncontrolled Component VS Controlled Component
+폼 엘리먼트에 value 속성의 정의여부에 따라 Uncontrolled Component, Controlled Component 가 구분됩니다. 
+
+input 요소의 value 속성이 정의되지 않으면 이러한 컴포넌트는 **Uncontrolled 컴포넌트** 라고 합니다. 이 컴포넌트는 일반 input 요소처럼 값을 자유롭게 입력하고 submit 할 수 있습니다. 대신 React 의 통제를 받지 못하기 때문에 React 로부터 value 속성에 초기화 해야할 경우 문제가 생기지요.
+
+그 문제를 value 속성 정의로 해결합니다. value 속성을 정의할 경우 이제 React 의 통제를 받기 시작하는데 이러한 컴포넌트를 **Controlled Component** 라고 부르기 시작합니다. value 속성에는 적절한 컨트롤을 위해 폼 엘리먼트 에 상응하는 state 가 들어가야 합니다. 만약 상수를 넣는다면 input 입력이 안되고 그 값으로 고정될 것입니다.
+
+그 이유는, **React 에서의 폼컨트롤의 데이터 바인딩은 React에서 input 요소의 value 속성으로의 단방향 바인딩으로 이루어 지기 때문입니다.** value 속성을 정의했다는 것은, React 로부터 폼 엘리먼트의 값을 정했다는 것을 뜻합니다. 정한 값이 상수면 더이상 값이 변할 여지가 없게 되는데요,
+
+- React 는 선언형 프로그래밍 방식을 채택하며, 데이터 중심이다
+- props 는 단지 부모로부터 전달받는 읽기전용 값일 뿐이다
+- state 가 컨트롤러와 연관된 실질적인 데이터. 상태를 관리한다
+
+라는 원리에 따라 결국은 state를 바인딩 해야됩니다. 그 후 이벤트핸들러를 연결시켜 setState 로 input 값을 조작하는 것입니다.
+
+#### 폼 컨트롤의 운영 방식
+다음과 같이 폼 컨트롤 최상단에 state 와 이벤트 핸들러를 배치시키고, 필요한 경우 Form Element 를 컴포넌트로 따로 분리시킵니다. 다수의 Form Element 가 존재하는 경우는, 각 Element 에 name 속성을 부여하고 하나의 핸들러에서 name, value 속성을 뽑아내어 그것으로 state 를 변경하면 됩니다.
+```jsx
+import React, { Component } from 'react'
+
+export default class MultiControlInputs extends Component {
+  state = {
+    // 사용자 등록 정보 객체 (이메일, 패스워드)
+    register: {
+      email: '',
+      password: '',
+    },
+  }
+  // 멀티 <input /> 핸들링 핸들러
+  handleChange = (e) => {
+    // 이벤트 타겟 객체로부터 name, value 속성 구조 분해 할당
+    const { name, value } = e.target
+    const { register } = this.state
+    
+    const register = {
+    ...this.state.register,
+    [name]: value
+    }
+    // register 상태 업데이트
+    this.setState({ register })
+  }
+  render() {
+    const { register } = this.state
+    return (
+      // Fragment
+      <React.Fragment>
+        <input
+          type="email"
+          name="email"
+          aria-label="계정 이메일"
+          value={register.email}
+          onChange={this.handleChange}
+        />
+        <input
+          type="password"
+          name="password"
+          aria-label="계정 패스워드"
+          value={register.password}
+          onChange={this.handleChange}
+        />
+      </React.Fragment>
+    )
+  }
+}
+```
+> JSX 에서 label 요소 for 속성은 htmlFor 로 사용됩니다.
+
+
+#### textarea 컨트롤
+HTML textarea 요소는 사용자가 입력한 내용을 자식 텍스트 콘텐츠로 받습니다.
+```jsx
+<textarea>
+  오늘 하루를 정리하는 글을 작성해봅시다.
+</textarea>
+```
+하지만 React는  `value`  속성을 대신 사용합니다. 즉, 한 줄 입력을 사용하는 폼 컨트롤과 비슷하게 작성합니다.
+```jsx
+<textarea
+  value={this.state.value}
+  onChange={this.handleChange}
+/>
+```
+
+#### select 컨트롤
+HTML select 요소는 드롭 다운 메뉴를 화면에 렌더링 합니다.
+```jsx
+<select>
+  <option value="react">React</option>
+  <option value="redux">Redux</option>
+  <option selected value="reactRouter">React Router</option>
+</select>
+```
+HTML 드롭 다운 메뉴는 초기 활성화 값을 `selected` 속성을 사용해 처리하지만, React는 `value` 속성을 대신 사용합니다.
+```jsx
+<select
+  value={this.state.value}
+  onChange={this.handleChange}
+>
+  <option value="react">React</option>
+  <option value="redux">Redux</option>
+  <option value="reactRouter">React Router</option>
+</select>
+```
+
+> ##### React 에서 멀티플 셀렉트 메뉴를 구성하려면?
+> React 컨트롤 컴포넌트로 구성된 select 요소는 사용자에 의해 복수의 아이템을 선택 받을 경우 다음의 2가지가 요구 됩니다.
+> 1. `multiple` 속성 값이 `true`
+> 2. `value` 값은 Array
+> ```jsx
+> <select multiple={true} value={this.state.value} onChange={this.handleChange}>
+> ```
+> `value` 값을 배열로 업데이트 받아야 하기 때문에 초기 값을 배열로 설정한 후, 핸들러 내부에서는 사용자의 멀티 선택을 배열 데이터로 만드는 공정을 거쳐 새로운 배열을 할당하여 업데이트 합니다.
+> ```jsx
+> state = {
+>   value: []
+> }
+> handleChange(e) {
+>   // select > option 요소 수집 후 배열 데이터로 변경
+>   const options = Array.from(e.target.children)
+>   // 사용자가 선택한 option 필터링
+>   const selectedOptions = options.filter(option => option.selected)
+>   // 필터링 된 option.value 값을 아이템으로 하는 새로운 배열 반환
+>   const selectedOptionsValue = selectedOptions.map(option => option.value)
+>   // 상태 업데이트
+>   this.setState({value: selectedOptionsValue})
+> }
+> ```
+
+
+#### File 인풋 요소
+파일인풋에는 뭔 파일을 넣어야 될지 모르기 때문에 value 속성을 바인딩하지 않으므로 Uncontrolled Component 로 분류된다. 따라서 DOM에 실제로 접근하여 컨트롤해야하는데, 그러기 위해서는 ref 속성을 사용해야 한다.
+> 파일을 전송하려면 File API 를 사용해야 하는데 MDN 문서 잘 찾아보고 숙지하도록 하자.
+
+#### Uncontrolled Component 접근법
+
+1. 생성자에서 인스턴스 속성에 Ref 속성을 만들어줍니다. React 를 벗어난 컴포넌트이므로 state 로 관리되지 않습니다. 
+```javascript
+constructor(props) {
+  super(props);
+  // Ref를 사용해 DOM 요소 참조
+  this.fileInput = React.createRef();
+}
+```
+
+2.  다음과 같이 요소의 ref 속성에다 어느 ref 속성에 요소를 연결시켜줄지 정의해줘야 합니다.
+```jsx
+<input type="file" ref={this.fileInput} />
+```
+
+3. ref.current 속성을 통해 element 객체에 접근합니다.
+```jsx
+accessRef = () => {
+  const span = this.refEl.current
+  span.style.fontSize = '62px'
+}
+```
 
 </div>
 </details>
