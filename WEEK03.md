@@ -436,6 +436,16 @@ accessRef = () => {
 }
 ```
 
+#### Dialog 폼컨트롤 개발방법
+1. 상위컴포넌트에서 list data, isVisibleDialog, editingData 등의 state 를 관리한다
+2. isVisibleDialog 는 Dialog 요소 렌더링 시 visible 여부 전달해줄 데이터다.
+3. state를 조작할 removeData, editData(list 데이터조작), showDialog, hideDialog(editingData, isVisibleDialog 조작) 메서드를 미리 정의한다.
+4. 데이터가 들어갈 컴포넌트를 렌더링한다. (수정, 삭제버튼을 컨텍스트에 연결된 상위컴포넌트의 메서드에 연결)
+5. 다이얼로그를 렌더링한다. (props로 isVisibleDialog 전달.)
+-  **static getDerivedStateFromProps() 로 editingData와 _previousData 를 비교하여 다이얼로그 초기값세팅**. state 를 바꾸면서 update 를 트리거하지 않기 때문에 완전 중요!!!!!
+- 그 후 멀티인풋 폼컨트롤을 작성하면됨
+- 접근성을위해 editingLecturer 가 null 일 경우 '데이터를 수정하고 있지 않다'는 태그를 심으면 좋음
+
 </div>
 </details>
 
