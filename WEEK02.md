@@ -472,6 +472,9 @@ class LifeCycleHook extends Component {
 ##### getDerivedStateFromProps 은 왜 static 메서드인가?
 이전에 componentWillReceiveProps 라는 생명주기 훅이 있었는데 사이드이펙트 관련하여 문제가 있었다고 한다. 이에 대체하여 생긴 훅인데, 사이드이펙트 보완을 위해 static 메서드로 했다고 한다. 자세한 사항은 내 레벨도 아니고 시간낭비라 일단 패스!!
 
+##### getDerivedStateFromProps 가 필요한 시기는?
+컴포넌트가 생성되어있는 시점에 constructor()를 통해 상태를 초기화 할순 없지만, state 를 계속 기본값으로 두었다가 업데이트 시 state 를 원하는 값으로 초기화 할 경우에(다이얼로그 visible 할때 state 초기화) 난 getDerivedStateFromProps 를 사용하고 섶다. 이유는 update 라이프사이클을 해치지 않기 때문이다. update 라이프사이클 중에서도 초반에 state 를 바꿀수있는 가장 유일한 장소는 getDerivedStateFromProps 이다. 이외에 shouldComponentUpdate 에서 setState 를 한다면 update 라이프 사이클이 다시 트리거 되면서 프로그램이 꼬여 예상치못한 문제를 발생시킨다. getDerivedStateFromProps 에서는 바꿀 state 속성을 리턴하면 update 라이프사이클의 재진행 없이 state가 변경되어 그대로 진행된다.
+
 ##### render 메서드 안에서의 자식 컴포넌트
 render 내에서 반환하는 JSX 는 React.createElement 로 생성된 자식 컴포넌트로 이루어져 있다. React.createElement 는 컴포넌트의 constructor를 호출하고 render 하는 일련의 과정을 내포하기 때문에 componentDidMount 가 호출되기 전에 자식컴포넌트의 마운트 생명주기 훅이 반복적으로 호출되는 것이다. 그렇게 모두 끝나 실제 DOM 에 마운트 된 경우, 가장 마지막 render 를 수행한 자식부터 componentDidMount 훅을 역순으로 호출하게 된다.
 
