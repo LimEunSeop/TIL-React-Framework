@@ -461,3 +461,58 @@ accessRef = () => {
 
 </div>
 </details>
+
+---------------------------------------
+
+<details open>
+<summary>5일차 학습 - Styled Component : Start</summary>
+<div markdown="1">
+
+### Styled Component
+Styled Components 라이브러리를 사용하여 Styled Component 를 만들면 기존에 inline style 적용 시 Javascript 객체를 사용해야 했던 불편함을 벗어나 이제 CSS 스타일 문법을 그대로 사용할 수 있게 됩니다.
+
+>더불어
+>
+>- 요소에 조잡한 style 속성이 없어지고 동적으로 생성된 고유한 class로 CSS Style 관리
+>- 벤더 프리픽스 필요 없이 표준 CSS만 신경써서 작성 가능
+>- props 를 통한 동적 스타일링 가능
+>
+>등의 여러가지 유지보수에 유리하다는 장점이 있습니다.
+
+#### 라이브러리 설치
+```sh
+npm i styled-components
+```
+
+#### Babel 플러그인
+프로젝트 루트 위치의 babel.config.js 파일에 babel-plugin-styled-components 플러그인을 추가합니다.
+```javascript
+module.exports = {
+  plugins: ['babel-plugin-styled-components'],
+}
+```
+> Babel 플러그인은 필수는 아니나 legible class names, server-side rendering compatibility, smaller bundles, and more. 등의 장점이 있다고 합니다. 저들과 바벨 플러그인을 아직 잘 모르므로 현 시점에서는 그냥 플러그인을 설치하는 과정이 있구나~ 하고 넘어가겠습니다.
+
+#### 사용법
+간단합니다. 모듈 import 후 요소명과 동일한 속성을 get 하여 리턴받은 메서드를 Tagged Templates 문법으로 호출하면 됩니다.
+
+이 메서드의 동작방식은 다음과 같습니다.
+1. CSS Text 를 백틱 문자열 그대로 구성한다 (interpolation 위치도 그대로)
+2. interpolation 에 들어갈 값은 파라미터 1개 에 값을 리턴하는 함수가 되어야 하며, 내부적으로 요소의 props 객체가 인자로 전달되어 결과를 얻은 후 그 값이 그대로 백틱 문자열에서 구성된대로 들어갈 것이다.
+
+```jsx
+import styled from 'styled-components';
+
+const AppButton = styled.button`
+  color: ${ props => props.reject ? '#f60' : '#06f' };
+`
+
+export default AppButton
+```
+```jsx
+<AppButton reject>취소</AppButton> // color: #f60
+<AppButton>취소</AppButton>        // color: #06f
+```
+
+</div>
+</details>
