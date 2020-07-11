@@ -4,14 +4,21 @@
 
 ---------------------------------------
 ## 3주차 질문
-- Q. 여기에 질문내용을 작성합니다.
+- Q. 다이얼로그 컴포넌트 작성 시 Data List 를 Props 로 받으면 어떨지?
   ```
-    A.여기에 답변 내용을 작성합니다.
+    A. Data List 를 관리하는 컴포넌트와 다이얼로그 사이의 depth가 깊으면 props 전달이 힘들 수 있습니다.
+    Context를 이용할 것을 염두에 두고 개발하여야 합니다.
   ```
 
-- Q. 여기에 질문내용을 작성합니다.
+- Q. React.useState Hook 사용 시 state를 한 곳에 관리해도 괜찮은지?
   ```
-    A.여기에 답변 내용을 작성합니다.
+    A. Hook 에서의 setState는 class Component의 setState 와 동작 방식이 다릅니다.
+    Class Component의 setState는 전달된 속성만 교체하는것에 반해
+    Hook 에서의 setState 는 전달한 객체로 그대로 교체합니다.
+    setState 는 비동기 메서드이기 때문에, Class Component 의 경우는
+    연속적인 setState 가 있어도 이 변경사항이 합쳐지지만
+    Hook 은 변경사항이 합쳐지지 못합니다.
+    따라서 Hook 에서는 상태를 분리하여 관리해야 합니다.
   ```
 
 ## React 훅, 폼, 고차 컴포넌트, 스타일 컴포넌트 그리고 미니 프로젝트 {E1}
