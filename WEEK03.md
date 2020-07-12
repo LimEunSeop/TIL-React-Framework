@@ -21,6 +21,21 @@
     따라서 Hook 에서는 상태를 분리하여 관리해야 합니다.
   ```
 
+- Q. React Hook 에서 콜백등의 함수참조는 어떻게 해결하나요?
+  ```
+    A. useCallback() 이라는 훅을 이용해 함수를 유지합니다.
+  ```
+
+- Q. useRef()가 있다면 왜 sideEffect 발생하는 Hook 을 사용하는지?
+  ```
+    A. useRef() 는 굳이 안써도 됩니다. Hook 내부에서 querySelectorAll() 과 같은 DOM API 로
+    Element 가져오면 되니까요. 그런데 Ref 를 쓰게 되면 Component 의 멤버로 다룰수 있으니까 편한겁니다.
+    useRef() 는 참조하기 편하게 멤버로 지정해놓기 위함이고, sideEffect 를 이용하는 것은 이를 이용하여
+    실제 DOM 처리를 하기 위함입니다. 대립되는 주체가 아니고 상호보완적인 개념이지요.
+    그리고 FileInput을 submit 하는 eventhendler 에서도 사이드이펙트를 발생시키는데요,
+    이는 DOM이 모두 마운트 되고나서의 User Input 을 핸들링하는 것이니 사이드이펙트가 당연히 발생하는것입니다.
+  ```
+
 ## React 훅, 폼, 고차 컴포넌트, 스타일 컴포넌트 그리고 미니 프로젝트 {E1}
 
 <details open>
@@ -462,9 +477,181 @@ accessRef = () => {
 <summary>4일차 학습</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### React Hook
+Functional Component 로 Class Component 의 능력을 흉내낼 수 있도록 해주는 기능입니다.
+
+생명주기에서 Hook 을 들어본 적이 있는데요, 생명주기에서 상황을 걸고 넘어진다는 뜻에서 그런 단어가 선택되는 겁니다. Functional Component 에서도 마찬가지입니다. Functional Component는 render 시에 매번 호출됩니다. 매번 호출되어 내부적으로 다양한 동작을 수행하는데 함수라서 딱히 그걸 Hooking 할 수단이 없습니다. 그래서 Hook 이라는 것을 따로 만들어 Functional Component 내부에 Hook 함수를 넣어 특정 기능을 Hooking 하는 것입니다.
+
+원래 리엑트 functional component는 render 시마다 매번 호출되므로 함수 내부에는 주로 props 를 구조분해 하는 상수나 이벤트 핸들러를 참조하는 상수 등의 즉석으로 할당되는 상수를 배치합니다. 매번 실행컨텍스트가 종료되는데, state나, Ref 참조, contextType 참조를 지속적으로 저장한다는 것은 상식적으로 불가능하죠. 게다가 클래스 컴포넌트가 아니라 함수이기 때문에 특정 사이드이펙트가 발생하는 시기를 Hooking 하는것은 절대 불가능 합니다.
+
+React 에서는 이를 각각 useState(), useRef(), useCotext(), useEffect() 라는 Hook 을 통해 해결합니다. 그럼, 하나씩 살펴보도록 합시다.
+
+<details close>
+<summary>여기서 질문! (너무길어 흐름을 방해하는것 같아서 접어놨습니다) </summary>
+<div markdown="1">
+
+> Q) useState() 는 Functional Component 내에서 생성된 state의 참조를 유지하기 위해 존재한다 치더라도, useRef() 나 useContext() 는 외부 객체의 고정된 참조값을 유지할 뿐입니다. 이렇게 React Hook은 고정된 참조라도 유지하기 위한 노력을 펼치는데 Functional Component 내에 선언된 이벤트 핸들러 함수에 대한 참조 유지 노력은 왜 없나요? Functional Component 호출 시마다 선언되는 Overhead 가 있는것 아닐까요??
+> 
+> 내가생각하는
+> A) 그럼 반대로 생각해 보세요. HOC 도움을 제외하고 생각하여, useRef()와 useContext() 아니면 Functional Component 내에서 Ref 와 Context 는 어떻게 참조할 것이죠? 그래서 저런 Hook 이 존재하는 것입니다. 존재하는 김에 참조를 유지시키는 것이고요.
+>
+>Q) 그럼 Functional Component 내의 이벤트 핸들러는 어떻게되는 것이죠?? 육안으로 봤을때 암만봐도 Overhead 가 있을것이란 찝찝함이 있는데, Functional Component의 내부적인 기능으로 이벤트 핸들러의 참조를 유지하는 기능이 제공되기라도 할까요??
+>
+>야무님답변
+>A) useCallback을 사용하세요. 다른 Hook과 마찬가지로 초기렌더링 이후 callBack 함수를 쭉 기억합니다. 2번째 인자로 전달되는 의존상태가 변할때만 재정의됩니다.
+
+</div>
+</details>
+
+
+#### useState : state 이용 함수
+useState 함수로 state의 초기값을 전해주면 0, 1번째 요소에 각각 state, setState 함수가 들어간 배열이 리턴됩니다. Functional Component 가 계속 호출되도 state에 대한 참조는 유지됩니다. **Hook 에서의 State는 변화하는 단위대로 분리하여 관리해야 합니다.** Hook 에서의 setState 는 Class Component 와는 달리 전체값을 덮으므로 비동기인 setState 함수 여러번 호출시 예상치못한 문제를 낳을 수 있기 때문입니다.
+```jsx
+const Counter = props => {
+  const [count, setCount] = useState(0)
+  const [userInfo, updateUserInfo] = useState(props.userInfo || null)
+  return (...)
+}
+```
+
+#### useRef
+실제 DOM 노드를 참조할 때 사용합니다. 마찬가지로 Functional Component 가 계속 호출되어도 참조를 계속 유지할 수 있게 됩니다. 
+
+Class Component 에서 사용된 createRef 는 매번 새로운 참조를 생성합니다. 함수형 컴포넌트에서는 절대 사용하면 안되지요. 그리고 객체 특성상 멤버변수의 한 번 참조로 소멸없이 지속적으로 관리되기 때문에 굳이 useRef() 를 쓸 의미는 없어보입니다. 
+
+> Q) Ref 가 실제 DOM 을 참조가능하다면, side effect 란 왜 존재하는 것? Ref 로 처리하면 될텐데.. File Input 과 같이 Controlled Component 로 관리하고 싶었으나 그렇게 되지 못했던 것들을 위해 특별히 따로 관리하기 대안으로 쓰이는 용도인가? 따로 관리 하지 않을 것이라면 side effect 가 발생하는 life cycle hook 에서 side effect 를 가볍게 처리하는 것인가?
+
+```jsx
+import React, { useRef } from 'react'
+
+function FileInput(props) {
+  // 실제 DOM 노드 참조(Ref.)
+  const domFileInputEl = useRef(null)
+  const domButtonEl = useRef(null)
+  // 이벤트 리스너
+  function handleSubmit(e) {
+    e.preventDefault()
+    console.log(`선택된 파일: ${domFileInputEl.current.files[0].name}`)
+    domButtonEl.current.setAttribute('disabled', 'disabled')
+    domButtonEl.current.innerText = '전송 됨'
+  }
+  // 렌더링
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        업로드:
+        <input type="file" ref={domFileInputEl} />
+      </label>
+      <br />
+      <button type="submit" ref={domButtonEl}>전송</button>
+    </form>
+  )
+}
+```
+
+#### useEffect : 사이드이펙트 처리 함수
+Hook 에서는 useEffect() 함수의 사용을 통해 마운트후(componentDidMount), 업데이트후(componentDidUpdate), 언마운트전(componentWillUnmount)의 side effect 처리를 흉내낼 수 있습니다. 조금 동작이 다르지만요. 왜 동작이 다를 수밖에 없었는지 납득할 준비를 하면서, 이제 다음 소스를 살펴봅시다.
+
+```jsx
+const Counter = (props) => {
+  const [count, setCount ] = useState(Number(props.count) || 10)
+  // 함수 몸체 내부에서 초기 1회 기억된 값을 사용하기 위한 상태
+  const [pristine, setPristine] = useState(true)
+
+  // 컴포넌트 생성 후, 마운트 된 시점 1회 실행됩니다.
+  useEffect(() => {
+    console.log('%c초기 1회 마운트 이후 시점의 사이드 이펙트 처리', 'font-weight: bold; color: #347edf')
+    // 순수 상태 -> 오염 상태로 업데이트
+    setPristine(false)
+  }, []) // 빈 배열이 인자로 전달되어 최초 1회만 실행되고 맙니다.
+
+  // 초기 렌더링 이후, 실행되는 조건 처리
+  useEffect(() => {
+    if (!pristine) {
+      console.log('%c컴포넌트 업데이트 과정의 사이드 이펙트 처리', 'font-weight: bold; color: #2097a7')
+    }
+
+    // 사이드 이펙트 처리 이후 실행됩니다.
+    return () => {
+      console.log('%c사이드 이펙트 이후 실행되는 처리 과정', 'font-weight: bold; color: #dca050;')
+    }
+  },
+    // count 의존 값이 변경될 때만 useEffect()가 실행됩니다.
+    [count]
+  )
+}
+```
+useEffect 에 전달되는 콜백은 Functional Component 가 호출될때마다 매번 같이 호출되는데요, 사이드이펙트가 존재하는 시점에 호출됩니다. 콜백 안에서 리턴되는 콜백은 최초에는 호출되지 않습니다. 바깥콜백을 콜백1이라 하고 안에서 리턴되는 콜백을 콜백2라고 합시다. 최초 Functional Component 호출시 콜백1이 호출되고 콜백2는 리턴만 할 뿐이지 호출되진 않습니다. 다음 Functional Component 호출 시 호출되라고 예약하는 차원에서 리턴하는 것입니다. 그럼 다음 Functional Component 호출 시 이전에 리턴되어 예약된 콜백2가 먼저 호출되고 콜백1이 호출됩니다. Functional Component 가 unmount 되면 예약되었던 콜백2가 호출되는 것이고요.
+
+따라서,
+
+**최초 마운트 시**
+콜백1->
+
+**업데이트중 (N번 업데이트)**
+(콜백2->콜백1->)* N번 호출
+
+**언마운트 시**
+콜백2 호출
+
+형태의 호출양상을 보입니다. 위의 소스와 같이 mount와 update시 실행되는 코드는 pristine 이라는 상태로 분리함으로써 componentDidMount 와 componentDidUpdate 훅을 흉내낼 수 있었는데요, componentWillUnmount 가 흉내되어야 할 콜백2는 완전히 흉내내지 못하고 업데이트 중에도 호출되는것을 볼 수 있습니다. 이것은 매번 호출되는 Functional Component 의 한계상 어쩔수 없는 것이고요, Unmount 시에는 Cleanup을 위해 꼭 콜백2가 호출되도록 하기위해 업데이트중에 기약없는 Unmount 를 위해 매번 콜백2 예약하고 다음 사이클에 호출되도록 반복하는 것입니다. 뭐, 클린업 작업이 일어나고 업데이트가 일어나기 때문에 결과적으로 흐름을 끊길만한 요소도 없고 걱정할 필요도 없습니다. 단지 이러한 차이가 있구나~ 이해만 하고 결론적으론 componentDidMount, componentDidUpdate, componentWillUnmount 라고 생각하고 각 코드 섹션을 작성해도 된다는 것입니다.
+>아, useEffect() 함수의 두번째 인자의 역할을 까먹었네요, 두번째인자는 변화를 감지할 객체를 정하는 역할을 수행합니다. 생략되면 매번 호출되는 것이고, 빈 배열이면 변화 감지할 객체가 없으니 최초 1회만 수행되는 것이고, 배열에 변화감지할 객체를 넣으면 객체의 참조값이 변하면 수행되는 것입니다. 즉, immutable 한 객체는 속성값이 변하여 새로운 immutable 객체가 교체될때인 경우이지요.
+
+#### Hook 의 작성 규칙
+Hook 은 컴포넌트가 렌더링 될 때마다 항상 동일한 순서로 Hook이 호출되는 것을 보장시키기 위해 Hook 작성 시 다음과 같은 규칙을 준수해야 합니다.
+1. **무조건 React 함수 컴포넌트의 최상단에서 호출하세요.** 일반적인 Javascript 함수 내에서 호출하면 안됩니다.
+2. 만약 **일반적인 Javascript 함수 내에서 호출했다면, 그 함수는 Custom Hook 이 되는 것입니다.** Custom Hook 도 Hook 이므로 React 함수 컴포넌트의 최상단에서 호출되어야 할 것입니다.
+
+#### 커스텀 Hook
+방금 살펴본 대로, 일반 Javascript 함수에서 Hook 을 호출할 경우 커스텀 Hook이 됩니다.  함수 내에서 기존의 Hook 을 호출하고 본인만의 로직을 겯들어 좀 더 향상된 Hook의 기능을 만듭니다. 때문에 전달인자는 어떨지 몰라도 리턴은 Hook 에 의해 생성된 객체를 반드시 리턴 하여 Functional Component 에서 Custom Hook 을 이용할 수 있도록 해야합니다.
+
+##### Custom Hook 정의
+```jsx
+import React, { useState } from 'react'
+
+// 사용자 정의(custom) 훅
+function useCountDownStatus(count) {
+  const [countStatus, setCountStatus] = useState('완료 전')
+  if (count === 0) {
+    setCountStatus('완료')
+  }
+  return countStatus
+}
+
+export default useCountDownStatus
+```
+countStatus 는 함수가 계속 호출되어도 그 참조를 계속 유지할 것입니다. 
+
+##### Custom Hook 사용
+```jsx
+import useCountDownStatus from '../hooks/useCountDownStatus'
+const CountDownStatusMessage = (props) => {
+  const countStatus = useCountDownStatus(props.count)
+  return countStatus === '완료' ?
+    <div>완료 됨</div> :
+    <div>카운트 다운 중...</div>
+}
+```
+
+지금은 시간이 없어서 여기까지 공부하지만..
+https://ko.reactjs.org/docs/hooks-custom.html 의 FriendStatus 예제를 통해 꼭 Custom Hook 에 대한 자세한 사용법을 익힙시다!! 꼭 필요할때 공부하도록 합시다.
+
+#### useCallback
+Class Component 의 이벤트 핸들러 등의 콜백함수를 Functional Component 에서도 사용하기 위함입니다. 아주아주 간단한 경우엔 Functional Component 안에서 그냥 내부함수 선언하거나 const 상수에 참조시킬수도 있습니다. 하지만 자주 렌더링되는 Functional Component 인 경우 성능상의 많은 비용을 야기할 수도 있습니다. 따라서 여느 Hook 처럼 콜백함수를 기억해놓는 역할을 수행하는 것입니다.
+
+```jsx
+const WeatherInfo = () => {
+  // useCallback() 훅을 사용해 이벤트 핸들러 설정
+  const handleGetWeatherInfo = useCallback((e) => {
+    // 날씨 정보 가져오는 로직
+  }, [/* 의존 상태 */])
+
+  // 렌더링
+  return <button type="button" onClick={handleGetWeatherInfo}>날씨 정보 가져오기</button>
+)
+```
+
+의존상태가 변하면 재정의되고, 그렇지 않으면 함수가 그대로 쭉 저장됩니다.
 
 </div>
 </details>
