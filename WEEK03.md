@@ -474,7 +474,7 @@ accessRef = () => {
 ---------------------------------------
 
 <details open>
-<summary>4일차 학습</summary>
+<summary>4일차 학습 - React Hook</summary>
 <div markdown="1">
 
 ### React Hook
