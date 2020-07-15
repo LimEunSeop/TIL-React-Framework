@@ -540,7 +540,103 @@ export default withTheme(AppInput)
 ---------------------------------------
 
 <details open>
-<summary>3일차 학습</summary>
+<summary>3일차 학습 - Redux 개요</summary>
+<div markdown="1">
+
+### Redux
+상태를 한 곳으로 모아 효율적으로 관리하는 라이브러리로, 크게 `Store`, `Reducer`, `Action`, `View` 4가지 요소로 이루어져 있습니다.
+이 중 `Store`가 그 상태를 담는 중심적인 객체로, 상태관리의 모든 인터페이스가 이곳에 들어있습니다. 이 인터페이스를 사용하기 위해 Store 를 생성할 때, `Reducer` 를 인자로 전달해 줍니다. `Reducer` 는 상태를 바꿀 수 있는 함수이기 때문입니다.
+
+자, 상태와 상태를 바꿀 수 있는 함수가 연결됐습니다. 그럼 사실상 상태가 변경될 연결고리는 갖춰진 겁니다. 필요한 건 모두 갖춘것 같습니다만, 이대로 끝난다면 Redux 의 요구조건을 만족시키지 못하게 됩니다. `Action` 이라는 것이 빠졌는데요, Redux 에서는 `reducer` 를 직접적으로 이용하여 상태를 바꾸지 않고 `Action` 이라는 상태변경 설명정보 객체를 굳이 만들어 `dispatch(Action 보내기, 상태 변경 오더)` 하여 간접적으로 `reducer` 를 이용하여 상태변경을 합니다. `reducer` 는 `Action` 을 받아 해석하고 새로운 상태를 반환하여 `Store` 에 반영합니다. `View` 가 상태변경을 `구독`하였다면, 등록되었던 listener 를 호출하여 UI 업데이트를 수행하게 됩니다.
+
+#### 스토어
+`.getState()`, `.dispatch()`, `.subscribe()` 등의 인터페이스를이용하여 상태를 관리하는 객체입니다. **인터페이스를 담당**하기 때문에 맨 처음에 필히 생성해야 하며, **createStore에 reducer를 연결하여 생성해야 합니다.** 그 이유는 상태가 있다면 상태를 변경할 모듈이 필요하기 때문입니다.
+
+#### 상태(State)
+Redux 스토어에서 관리하는 상태(데이터) 입니다.
+상태는 immutable 데이터여야 하는데요, 저는 이 근본적인 이유를 **변경을 가장 일관적이고 효과적으로 감지하기 때문** 이라고 보고싶습니다. State 는 객체형태인데요, mutable 이라면 이것의 변경사항을 감지하기란 어렵습니다. 객체의 내부구조가 무엇이 올지도 모를 뿐더러 일일히 탐색해서 감지한다는 것은 비용적으로나 유지보수로나 매우 비효율적일 것입니다. reducer 가 새로운 immutable 한 상태를 반환하면 상태객체의 참조값이 바뀔것이고, Store 는 이 참조값의 변경만을 캐치하여 상태변경을 트리거 하면 이보다 깔끔하고 좋은 코드가 어딨을까요?
+
+#### 액션
+dispatch(Action 보내기, 상태 변경 오더) 를 위한 상태 변경 정보를 기술하기 위한 객체입니다. type 속성에 액션명을 지정하며, 추가 전달인자가 필요한 경우 payload 속성에 첨부할 수 있습니다.
+```jsx
+const RESET_COUNT = 'RESET_COUNT' // 유지보수를 위함
+const resetCountAction = { type: RESET_COUNT, payload: 0 }
+```
+
+#### 리듀서
+애플리케이션 상태를 교체하는 함수입니다. **첫째인자는 상태, 둘째인자는 Action 이 파라미터로 와야합니다!**
+정의에서 쉽게 알 수 있듯, 새로운 상태를 리턴하여 이전 상태를 교체하는 역할을 수행합니다. Action 을 dispatch 한다면 Reducer 가 Action을 받게되어 Action 의 type 을 판별 후 기존 State 를 바꾸는 적절한 로직을 수행하여 새로운 State 를 리턴하여 Store가 상태를 교체하도록 합니다.
+
+이 때, 리듀서는 반드시 순수함수여야 합니다. 순수함수란, 전달인자에 따라 확실히 결과값이 정해진 함수로, 더불어 더욱 순수한 본연의 기능 수행을 위해 어느 사이드이펙트(네트워크 요청, FILE I/O, 데이터 변경)도 수행되지 않음을 추가조건으로 합니다.
+
+#### 서브스크립션
+상태변경을 구독하여 상태업데이트시 listener 를 호출시킵니다.
+```jsx
+const unsubscribe = store.subscribe(() => console.log(`상태 변경 감지: ${store.getState()}`))
+unsubscribe() // 구독 취소
+
+```
+`subscribe()` 메서드는 unsubscribe  함수를 반환하며, 이를 실행하면 상태가 업데이트 되어도 UI를 업데이트 하지 않습니다. Redux 라이브러리 사용시 이 과정은 자동적으로 수행해 준다고 합니다.
+
+#### Redux 스토어 구조
+다음과 같은 구조로 파일을 정리합니다. 대충 각 폴더의 index.js 와 actionTypes.js 는 어떻게 작성하는지 이제 안봐도 알것같긴 한데, 나머지 파일들은 어떻게 작성되며, 이에 따른 상태나 리듀서 구성은 도대체 어떻게 될까 ? 아직 배우지 않아서 정리하고 싶어도 정리하지 못하는 상황입니다. 알고싶더라도 좀만 참고 다시 정리하는 시간을 가져봅시다!!
+```
+store/
+├── index.js # 스토어 엔트리 (스토어 생성 ← 루트 리듀서)
+├── actions/
+│   ├── index.js # 액션 엔트리 (액션 내보내기)
+│   ├── actionTypes.js # 액션 타입 (액션 타입: 상수)
+│   ├── counter.js
+│   ├── todos.js
+│   └── filter.js
+└── reducers/
+    ├── index.js # 리듀서 엔트리 ([루트 리듀서:병합] 내보내기)
+    ├── counter.js
+    ├── todos.js
+    └── filter.js
+```
+
+#### 간단한 예제
+대충 이런식으로 돌아갑니다.
+```jsx
+import { createStore } from 'redux'
+
+const initialNews = '공정하고 정의로운 뉴스'
+
+// actionType.js
+const CHANGE_NEWS_TITLE = 'change_news_title'
+
+// action.js
+const changeNewsTitleAction = {
+  type: CHANGE_NEWS_TITLE,
+  payload: '행복한 뉴스',
+}
+
+const reducer = (state = initialNews, action) => {
+  switch (action.type) {
+    case CHANGE_NEWS_TITLE:
+      state = action.payload
+      break
+  }
+  // ...
+  return state
+}
+
+const store = createStore(reducer)
+console.log(store.getState())
+window.setTimeout(() => {
+  store.dispatch(changeNewsTitleAction)
+  console.log(store.getState())
+}, 3000)
+```
+
+</div>
+</details>
+
+---------------------------------------
+
+<details open>
+<summary>4일차 학습</summary>
 <div markdown="1">
 
 ### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
