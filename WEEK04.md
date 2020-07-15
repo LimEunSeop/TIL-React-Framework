@@ -312,7 +312,7 @@ export default Counter
 
 #### 가상 클래스/요소, 중첩 규칙
 다음과 같은 방식으로 Sass 문법처럼 사용할 수 있다는 의미입니다. (내부적으로 stylis.js 사용)
-```
+```jsx
 const ControlButton = styled.button`
   :hover,
   :focus {
