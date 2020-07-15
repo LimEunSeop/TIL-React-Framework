@@ -390,7 +390,7 @@ const ShadowBox = styled.div`
   box-shadow: 0 6px 8px 1px rgba(0,100,30,0.35)
 `
 ```
->javascript에서 배웠던 mixin 패턴은 두개 이상의 객체의 능력을 합치고, 만약 속성이 중복되면 뒤에있는 객체의 속성으로 덮어쓴다는 개념으로 쓰였다. 그러나 Sass 의 mixin Documentation을 보니 코드 재사용을 위함이라고 적혀있다. CSS 세계의 mixin이란 코드재사용을 의미하는것갈다. 그럼 스타일 확장은 무슨 의미로 써야할까? 의미적으로 컴포넌트의 계층구조를 형성하기 위함이라고 생각한다. 이에반해 mixin은 단지 필요한 기능을 가져다 쓰는것 뿐이다. 내 생각엔 객체지향 용어로 봤을 때 mixin이 Interface Implementation 이고 스타일 확장은 Class Inheritance 이다.
+>javascript에서 배웠던 mixin 패턴은 두개 이상의 객체의 능력을 합치고, 만약 속성이 중복되면 뒤에있는 객체의 속성으로 덮어쓴다는 개념으로 쓰였다. 그러나 Sass 의 mixin Documentation을 보니 코드 재사용을 위함이라고 적혀있다. CSS 세계의 mixin이란 코드재사용을 의미하는것갈다. 그럼 스타일 확장은 무슨 의미로 써야할까? 의미적으로 컴포넌트의 계층구조를 형성하기 위함이라고 생각한다. 이에반해 mixin은 단지 필요한 기능을 가져다 쓰는것 뿐이다. 내 생각엔 객체지향 용어로 봤을 때 mixin이 Interface Implementation 이고 스타일 확장은 Class extension 이다.
 
 #### 애니메이션
 keyFrames 라는 모듈로 동작을 따로 정의합니다. CSS 내부에서 쓰기엔 길이가 너무 길어 제한시켰을까요.
