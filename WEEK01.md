@@ -97,6 +97,7 @@ async function asyncFn() {
 >
 > 여기서 질문. 꼭 ```await``` 키워드는 ```resolved``` 상태인 Promise만  받을 수 있는 것일까요? 선생님께 질문드려야겠습니다.
 > => 답 알아냈습니다. rejected Promise 를 await 한다면 함수를 종단하고 rejected Promise 를 그대로 리턴합니다. resolved Promise 를 await 한다면 PromiseValue를 받을 것이고, return 키워드로 리턴시 resolved Promise에 PromiseValue는 return 값이 될것입니다.
+> => rejected Promise 를 바로 반환하지 않고 try-catch 문을 통해 catch 할 수도 있습니다. 이 때, catch의 매개변수로 Error 객체가 아닌 promiseValue 가 들어옵니다. 또한 catch 되는 순간 별다른 조치가 없으면 resolved Promise 가 리턴되는데요, rejected Promise 를 리턴하고 싶다면 `throw new Error(400)`, `throw 400`, `return Promise.reject(new Error(400))` 과 같이 써줘야 합니다.
 
 #### Async / Await 응용 테크닉
 일반 Promise 사용구문과 Async/Await 구문을 비교해보고, Promise.all(), 구조분해 할당으로 응용해보겠습니다.
