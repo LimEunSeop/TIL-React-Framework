@@ -636,13 +636,16 @@ window.setTimeout(() => {
 ---------------------------------------
 
 <details open>
-<summary>4일차 학습 - Redux</summary>
+<summary>4일차 학습 - Redux 패턴</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### Redux 패턴
+Redux 가 동작하는 패턴을 다시 요약해봅시다.
+1. createStore(reducer) 로 reducer 와 연결된 Store 를 생성한다.
+2. store.dispatch(Action) 을 통해 reducer 를 호출하여 새로운 state 를 기존 state 에 교체한다.
+3. 구독되었던 listener들을 호출한다.
 
+reducer는 첫번째 인자로 state, 두번째 인자로 Action이 오는 함수입니다.
 </div>
 </details>
 
