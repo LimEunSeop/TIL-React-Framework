@@ -180,11 +180,11 @@ npmjs.com 이었나 그런 사이트 가서 가져오면 됩니다. 외부템플
 
 #### Polyfill 사용해야될때
 
-Babel로 ES6+ -> ES5 변환은 어떻게 하겠지만 IE 의 경우는 지원 안하는 기능이 많아서 그마저도 허용 못하는 것이 많습니다. polyfill도 겯들여야 IE 호환 가능합니다. react-app-polyfill 모듈 설치하고 반드시 index.js 엔트리파일 1번째라인에 import 시켜주세요. (react-app-polyfill/ie9,10,11 버전구분, 9로 갈수록 번들사이즈 커질것.)
+Babel로 ES6+(표준제안된 문법 포함) -> ES5 변환은 어떻게 하겠지만 IE 의 경우는 지원 안하는 기능이 많아서 그마저도 허용 못하는 것이 많습니다. polyfill도 겯들여야 IE 하위버전까지 호환 가능합니다. react-app-polyfill 모듈 설치하고 반드시 index.js 엔트리파일 1번째라인에 import 시켜주세요. (react-app-polyfill/ie9,10,11 버전구분, 9로 갈수록 번들사이즈 커질것.)
 
 #### 호환성 검수
 
-caniuse.com 에서 사용할 기능 등의 한국 브라우저 점유율 등을 고려해보고 package.json 에 browserlist query 를 짭니다. 그러면 그 쿼리에 맞춰 나오는 브라우저에 맞게 Javascript 코드가 출력됩니다. nix browserlist 하면 호환 브라우저 리스트를 확인할 수 있습니다.
+caniuse.com 에서 사용할 기능 등의 한국 브라우저 점유율 등을 고려해보고 package.json 에 browserlist query 를 짭니다. 그러면 그 쿼리에 맞춰 나오는 브라우저에 맞게 Javascript 코드가 출력됩니다. npx browserlist 하면 호환 브라우저 리스트를 확인할 수 있습니다.
 
 #### CSS 초기화
 
