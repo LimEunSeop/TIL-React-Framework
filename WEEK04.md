@@ -3,16 +3,6 @@
 
 
 ---------------------------------------
-## 4주차 질문
-- Q. 여기에 질문내용을 작성합니다.
-  ```
-    A.여기에 답변 내용을 작성합니다.
-  ```
-
-- Q. 여기에 질문내용을 작성합니다.
-  ```
-    A.여기에 답변 내용을 작성합니다.
-  ```
 
 ## 4주차 대 주제를 작성합니다.
 
@@ -652,12 +642,90 @@ reducer는 첫번째 인자로 state, 두번째 인자로 Action이 오는 함�
 ---------------------------------------
 
 <details open>
-<summary>5일차 학습</summary>
+<summary>5일차 학습 - React Redux : 최종 그림</summary>
 <div markdown="1">
 
-### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
-- Heading 은 최소 '''**###**''' 뎁스부터 시작하기 바랍니다. (대 주제를 '''##'''로 작성했기 때문에)
-- Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
+### React Redux
+프로젝트 실습이 우선이고 코드를 첨부해가며 설명하기엔 시간이 많이 걸리고.. 글로만 써도 충분하다 생각들기에 글로만 써보겠습니다. 이 정리는 제 지식 인덱싱이 주목적이기에.. 읽고 이해가신다면 다행이겠지만 이해가 안가도 양해 부탁드립니다.
+
+#### 최종 그림
+최종 그림을 다루기 전에 다시한번 개념정립 합시다.
+
+- **액션** : 리듀서와 약속된, state 에 대한 조작명령을 기술하는 객체. 
+- **액션 Creator** : payload 를 매개변수로 받아 액션객체를 반환. 컴포넌트에서 액션객체 작성의 부담이 줄어들고, React-Redux 모듈에서의 mapDispatchToProps 객체를 구성할 때 꼭 필요한 요소이다.
+- **리듀서** : 액션객체를 받아 액션타입을 분류한 후 그에따른 state 에 대한 조작을 수행하는 함수. Reducer 이름의 의미 답게 Store 에서 관리할 전체 State 를 의미단위로 쪼개어 state 조작 함수와 함께 모듈로 관리된다.
+- **루트리듀서** : store 에 전달되는 리듀서들의 맨 꼭대기 계층에 있는 리듀서로, 모든 리듀서를 하나로 묶어 리듀서에 흩어진 State 를 합쳐 Store 에 전달하는데 일조한다.
+- **Store** : 루트리듀서에 의해 취합된 State 를 관리하고, 액션을 리듀서에 보내 state를 조작하는 dispatch(), subscribe 등의 상태관리 관련 인터페이스를 제공해주는 객체이다.
+
+
+우선 모든 과정 다 생략하고 최종 그림을 기술하겠습니다.
+```
+store/
+├── index.js # 스토어 엔트리 (스토어 생성 ← 루트 리듀서)
+├── actions/
+│   ├── index.js # 액션 엔트리 (액션 내보내기)
+│   ├── actionTypes.js # 액션 타입 (액션 타입: 상수)
+│   ├── counter.js
+│   ├── todos.js
+│   └── filter.js
+└── reducers/
+    ├── index.js # 리듀서 엔트리 ([루트 리듀서:병합] 내보내기)
+    ├── counter.js
+    ├── todos.js
+    └── filter.js
+```
+이제 이 그림이 좀 이해가 갑니다. index.js 에서 루트리듀서를 결합한 store를 반환합니다. 루트리듀서는 reducers/index.js 에서 combineReducers 라는 redux 모듈의 함수에 의해 반환됩니다. 그 후 store의 state 혹은 액션을 사용할 컴포넌트에서 getState() 나 dispatch() 따위의 store 기능을 사용하여 State 를 관리하며Subscribe 를 트리거 하는 것입니다. 액션은 actions/actionTypes.js 같은 곳에서 정의된 상수의 액션타입을 참조하고, actions/index.js 같은 곳에서 payload 를 인수로 받아 Action 객체를 리턴하는 Action Creator 형태로 내보내는걸 권장합니다. 
+
+디렉터리 구조는 딱히 정해진 것 없고 어떻게 하든 자유입니다. 다만 다음과정이 필수입니다.
+
+- 상수 액션타입 생성
+- Action Creator 생성
+- 하위 리듀서 생성
+- 루트리듀서 생성
+- store 와 루트리듀서 결합
+
+##### Redux Only 일때의 최종 그림
+위의 필수조건을 만족한 후 컴포넌트에서 Action Creator와  Store를 불러들인 뒤 JSX 스트럭쳐에서 getState와 dispatch 등의 함수를 써서 store 의 상태를 조작합니다. render 함수 내부에 store.getState() 이니 store.dispatch() 니 하는 함수가 있어 컴포넌트의 재사용성이 떨어져 보입니다. 제 생각엔 Context API 나 이거나 도긴개긴 이라고 생각합니다.
+
+##### React-Redux 일때의 최종 그림
+위의 필수조건을 만족한 후 Store 제공을 시작할 컴포넌트를 react-redux 모듈의 **Provider 컴포넌트**로 감쌉니다. 컴포넌트에서 Action Creator 와 react-redux 모듈의 **connect** 고차 컴포넌트를 불러 필요한 State 와 액션 dispatch 메서드를 **props 에 맵핑**시켜 줍니다. 이제 JSX 는 props 만 신경쓰면 되므로 컴포넌트의 재사용성이 매우 늘어났습니다. 전통적인 순수 리액트의 Top-down props 전달 방식에 바로 재사용이 가능할 정도라고 생각합니다.
+
+- **Provider** : 컴포넌트에게 store 를 제공해주는 컴포넌트입니다. 이제 자손컴포넌트와 store 와 연결고리가 생겨 connect 함수를 호출할 수 있게 됩니다.
+```jsx
+function  render() {
+  ReactDOM.render(
+    <Provider store={store}>
+      <App  />
+    </Provider>,
+    document.getElementById('root')
+  )
+}
+```
+
+- **props Mapping** : connect HOC 에 전달할 매핑 속성을 제공합니다. mapDiapatchToProps 는 지금처럼 dispatch 함수가 인자로 전달되는 콜백함수가 아닌 Action Creator 의 참조가 Value 인 객체일 수도 있습니다.
+```jsx
+// 스토어 상태 props 매핑
+const mapStateToProps = state => ({
+  count: state.count,
+})
+
+// 디스패치 props 매핑
+const mapDispatchToProps = dispatch => ({
+  onIncreasement: dispatch({ type: 'INCREASE_COUNT' }),
+  onDecreasement: dispatch({ type: 'DECREASE_COUNT' }),
+})
+```
+
+- **connect HOC** : 세번째 전달인자는 props 를 재구성하고 싶을때 사용합니다.
+```jsx
+// Connect() 래핑
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+  /* { ...ownProps, ...stateProps, ...dispatchProps }, */
+  /* { pure: false, ... } */
+)(Counter)
+```
 
 </div>
 </details>
