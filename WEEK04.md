@@ -702,7 +702,7 @@ function  render() {
 }
 ```
 
-- **props Mapping** : connect HOC 에 전달할 매핑 속성을 제공합니다. mapDiapatchToProps 는 지금처럼 dispatch 함수가 인자로 전달되는 콜백함수가 아닌 Action Creator 의 참조가 Value 인 객체일 수도 있습니다.
+- **props Mapping** : connect 함수 에 전달할 매핑 속성을 제공합니다. mapDiapatchToProps 는 지금처럼 dispatch 함수가 인자로 전달되는 콜백함수가 아닌 Action Creator 의 참조가 Value 인 객체일 수도 있습니다.
 ```jsx
 // 스토어 상태 props 매핑
 const mapStateToProps = state => ({
@@ -716,7 +716,7 @@ const mapDispatchToProps = dispatch => ({
 })
 ```
 
-- **connect HOC** : 세번째 전달인자는 props 를 재구성하고 싶을때 사용합니다.
+- **connect 함수** : 세번째 전달인자는 props 를 재구성하고 싶을때 사용합니다.
 ```jsx
 // Connect() 래핑
 export default connect(
