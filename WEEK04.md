@@ -729,3 +729,53 @@ export default connect(
 
 </div>
 </details>
+
+---------------------------------------
+
+<details open>
+<summary>6일차 학습 - React 팁 2탄</summary>
+<div markdown="1">
+
+### React 팁 2탄
+#### 비동기 함수
+promise chain : 얘네 체인 한 세트가 비동기로 돌아감. 물론 체인은 순서가 지켜지겠지만
+async 함수 : 이 함수 자체는 비동기로 돌아감. 즉 이 함수가 호출되는 위치에서 비동기로 인식한다는거. async 함수 내에서는 순서가 물론 지켜짐. await 같은거 철저히 데이터 올 때까지 기다리고.
+
+이 둘의 조합이 와도 어떻게 돌아갈지 감이 오겠지?
+
+#### css url 을 js 에서 쓴다면?
+css 안에서는 src 디렉터리를 ~로 접근했지만 js로 오면 import 한 문자열을 가져와서 인터폴레이션 해야함. require 하면 인라인으로 더 편하게 주소 가져올 수 있음.
+
+#### svg 최적화
+svg 최적화는 필수이다.
+웹 :  svgomg 서비스 이용. xmlns 속성 필히 정의
+로컬 : svgo 라는 node 모듈 이용
+
+#### forwardRef
+ref 속성을 React 컴포넌트도 받고자 할때. 예를들어 버튼을 감싼 컴포넌트인 경우 button 요소에 ref 연결시켜 DOM 조작 하고 싶을때 forwardRef HOC 로  forwardRef 컴포넌트를 만듬. forwardRef 컴포넌트는 2번째 인자로 ref 를 받을 수 있게됨. 부모가 forwardRef 컴포넌트면 자손도 forwardRef 가 됨. props 에 전달 안됨. 무조건 이런 특별한 공정을 거쳐야됨. forwardRef 만들면 자식은 Anonymous 되니 필히 displayName 속성을 정의하는 것을 습관으로 하자.
+
+#### createPortal
+body 아랫쪽 스크립트에 의존있을때, Toast 알림 접근성 설정할때(Vritual DOM Rendering으로는 Screen Reader 감지 불가)
+
+#### as속성 
+스타일컴포넌트의 에 as 속성 부여하면 요소체인지 가능 (실제 엘리먼트도 가능한가?)
+
+#### 상태관리패턴1 [Context API + useReducer()]
+useReducer 사용하여 reducer, initState 받은 후 state, dispatch 받아내어 Context API Provider 의 value 로 전달해줌(store 모듈 측에서 Provider 를 리턴해주면 좋음). 각 컴포넌트는 context 를 받아내어 state 리딩, dispatch 작업 수행.
+
+#### 상태관리패턴2 [Redux + React Redux + Redux Devtools Extensions]
+우리가 많이 해왔던것. 이전에서 많이 다뤘으므로 생략. 흥미로운건 store 에서 Provider 에 store 결합하여 리턴한다는것. 그리고 이거 짱중요
+```jsx
+import { composeWithDevTools } from 'redux-devtools-extension'
+
+const store = createStore(rootReducer, composeWithDevTools()) 
+```
+store 만들때 이 작업 꼭 해주기. 크롬에서 디버깅 하려면 꼭 필요. 클래스 컴포넌트만 됨. 미들웨어 연결할 수 있다는데 나중에 필요할때 문서 찾기.
+
+아 그리고 functional component 에도 reduxmap 되던데? 
+
+#### NEXT UP
+Redux Hooks (useSelector, useDispatch, createSelector), Redux Thunk 학습
+
+</div>
+</details>
