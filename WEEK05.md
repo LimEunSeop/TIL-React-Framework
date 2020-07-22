@@ -72,7 +72,164 @@ path 속성을 읽어 일치하면 컴포넌트 렌더링을 실행하는 컴포
 ---------------------------------------
 
 <details open>
-<summary>2일차 학습</summary>
+<summary>2일차 학습 - React Router</summary>
+<div markdown="1">
+
+#### Switch 컴포넌트
+위에서부터 차례대로 검사하여 path속성이 매치되는 Route 객체를 하나라도 만나면 break 합니다.
+```jsx
+<Switch> 
+  <Route path="/about" component={About} />
+  <Route path="/:user" component={User} />
+  <Route path="*" component={NoMatch} />
+</Switch>
+```
+
+#### Link 컴포넌트
+Redirection 없이 현재 Path와 History 객체의 조작만으로 애플리케이션의 탐색이 가능하도록 해줍니다.
+>title, id, className 과 같은 속성을 정의하면 내부의 a 요소에 그대로 전달됩니다. styled-component 했던때 처럼요.
+
+##### 사용 예시
+<details close>
+<summary>펼치기</summary>
+<div markdown="1">
+
+```jsx
+// to 경로 문자열(string)
+<Link to="/lectures">강의</Link>
+
+// to 패스 + 검색(?) 문자열
+<Link to="/lectures?sort=createdAt">강의</Link>
+
+// to 객체(object) 설정
+// pathname : 링크 경로 문자열
+// search : 쿼리 매개변수 문자열
+// hash : URL 해시(#) 문자열
+// state: 상태 설정 (location으로 접근. 예: { fromDashboard: true })
+<Link to={{ 
+  pathname: '/lectures', 
+  search: '?sort=createdAt' 
+}}>강의</Link>
+
+// to 함수(function) 설정
+// 현재 위치(location)를 인자로 전달 받는 함수를 사용해 객체 또는 문자열 반환
+<Link to={
+  (location) => ({ ...location, pathname: '/lectures'})
+}>강의</Link>
+
+<Link to={
+  (location) => `${location.pathname}?sort=name`
+}>강의</Link>
+
+// replace 불리언(boolean) 설정
+// 속성을 설정할 경우, 링크 클릭 시 History에 새로운 항목을 추가하는 대신 현재 항목으로 교체
+<Link 
+  to="/lectures" 
+  replace
+>
+  강의
+</Link>
+```
+
+</div>
+</details>
+
+##### innerRef 설정
+function 형태와 RefObject 형태를 받을 수 있습니다. React 16, React Router 5.1 이상이면 그냥 ref 속성 사용해도 됩니다.
+
+###### function 형태
+```jsx
+<Link
+  to="/"
+  innerRef={node => {
+    // `node`는 마운트 된(mounted) DOM 요소를 참조하고,
+    // 마운트가 해제 된 경우(unmount)는 null 입니다.
+  }}
+/>
+```
+
+###### RefObject 형태
+```jsx
+class LinkRefDemo extends React.Component {
+  
+  anchorRef = React.createRef()
+
+  render() {
+    return (
+      <Link to="/" innerRef={anchorRef} />
+    )
+  }
+
+}
+```
+
+#### NavLink 컴포넌트
+Navigation 에 맞게 Link 컴포넌트를 개조한 컴포넌트입니다.
+```jsx
+<nav className="global-nav">
+  <ul>
+    <li><NavLink to="/" exact>홈</NavLink></li>
+    <li><NavLink to="/lecture">강의</NavLink></li>
+    <li><NavLink to="/lab">연구</NavLink></li>
+  </ul>
+</nav>
+```
+- 일단 현재 Path 와 to속성의 rule 을 쫙 비교합니다. rule 에 맞으면 active class 를 붙여줍니다. 사용자는 그 active 클래스에 스타일을 부여하여 활성화됨을 나타내는 것입니다.
+- 링크를 클릭하면 to 속성의 Path 로 링크를 이동시켜줍니다.
+
+##### exact, strict 속성
+NavLink 컴포넌트는 active 클래스 붙일까말까 에 이 속성을 쓰는 것입니다.
+> Route 컴포넌트는 자식 컴포넌트를 렌더링 할까말까 rule 비교 시 이 속성을 썼습니다.
+
+##### activeClassName, activeStyle 속성
+activeClassName 은 active 상태시 클래스이름을 커스터마이징하고, activeStyle 은 active 클래스이름이 무엇이건 to rule 에 맞아 active 조건 충족 했을 경우 정의한 인라인스타일을 먹입니다.
+
+#### Redirect 컴포넌트
+이 컴포넌트를 만나면 특정 URL 로 Redirection 시킵니다.
+from 속성이 없으면 만날시 무조건 to 로 Redirection 됩니다. to 에 오는 값은 Link 처럼 그냥 String 이 오거나 Location 에 들어갈 객체가 온다는 점이 똑같네요.
+```jsx
+// to : 문자열 설정
+<Redirect to="/dashboard"/>
+
+// to : 객체 설정
+<Redirect to={{
+  pathname: '/login',
+  search: '?utm=your+file',
+  state: {
+    referrer: currentLocation
+  }
+}}/>
+```
+from 이 오는순간 rule 을 적용하여 현재 path 와 비교합니다. exact strict sensitive 오는것 다 똑같네요.
+```jsx
+// from : 문자열 설정
+<Redirect from="/admin" to="/dashboard" />
+<Redirect from="/users/:id" to="/users/profile/:id" />
+
+// exact : 정확한 URL 매칭 설정
+<Redirect exact from="/" to="/home" />
+
+// strict : 엄격한 URL 매칭 설정
+<Redirect strict from="/one/" to="/home" />
+
+// sensitive : 대소문자  URL 매칭 설정
+<Redirect sesitive from="/One/" to="/one" />
+```
+음.. Redirect 에는 push 속성만 있네요. 공식문서 보니까 replace 같은건 없었습니다. 제 예상으로는 Link와 Redirect 의 기본동작이 다르기 때문이라고 생각드는데요, Link는 Push 가 기본 동작이어서 replace 라는 옵션이 있었던 것이고 Redirect는 replace 가 기본동작이어서 push 라는 옵션이 있었던 것인가 봅니다. 참으로 흥미롭습니다. 어느 사이트를 가면 redirect 가 대충되어 뒤로가기 하면 다시 redirect 되는 문제가 있었는데 React Router 에서는 Redirect 에서 이것을 기본적으로 해결해 주네요. 
+```jsx
+// push : 현재 history 항목을 바꾸지 않고, 새 항목 추가
+<Redirect to="/dashboard" push />
+```
+
+이 Redirect 는 올바르지 않은 주소 입력시 page not found 로 리다이렉팅 해줄때 유용히 쓰입니다.
+
+</div>
+</details>
+
+---------------------------------------
+
+<details open>
+<summary>3일차 학습</summary>
 <div markdown="1">
 
 ### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
