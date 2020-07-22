@@ -229,7 +229,85 @@ from 이 오는순간 rule 을 적용하여 현재 path 와 비교합니다. exa
 ---------------------------------------
 
 <details open>
-<summary>3일차 학습</summary>
+<summary>3일차 학습 - Route Props, 중첩,보호 라우팅, Redux 통합</summary>
+<div markdown="1">
+
+### Route 자식 컴포넌트 Props
+Route 자식 컴포넌트는 match, location, history 3가지 props 를 받게 되어 있습니다.
+
+**match** : path 의 매칭관련 정보를 담습니다.
+- path : Route 객체의 path 속성값
+- url : 브라우저의 URL에 적힌 path 를 그대로 가져옵니다.
+- params : 매개변수를 통해 넘어온 값들의 쌍입니다. 뒤에 설명합니다.
+- isExact : url 이 path 에 정확히 매칭되었는지의 여부 (ex. exact 속성이 없는 Home Link 는 다른페이지 탐색시 IsExact 가 false 입니다.)
+
+**location** : 현재 URL 위치정보와 필요한 상태값을 담습니다.
+- hash : 현재 url 에 hash 가 있으면 여기에 담깁니다.
+- pathname : 현재 주소창의 path 를 그대로 담습니다.
+- search : 현재 URL 의 queryString 을 담습니다.
+- state : 현재 state 를 담습니다(이전 링크로부터 전달된 값)
+> Link 나 Redirect 컴포넌트의 to 속성에서 location 에 들어갈 속성을 객체로 구성하여 전달할 수 있는데요, Route 자식 컴포넌트의 props.location 에 세팅되게 됩니다. pathname 당연히 세팅해줘야하고 hash, search, state 는 옵션입니다. pathname 만 쓸거면 그냥 to속성을 문자열로 세팅하죠. 객체를 던진다는건 나머지 속성을 세팅해준다는 목적으로 던지는 것입니다.
+
+자주쓰는 테크닉을 한번 살펴봅시다.
+
+#### 커스텀 props 전달 테크닉
+match, location, history 말고도 sortBy 등의 사용자 정의 props 를 전달할 수도 있습니다. 이 때는 render 속성을 통해 래핑렌더를 실시해야 합니다.
+```jsx
+<Route
+  path="/categories"
+  render={(props) => <Categories sortBy="createdAt" {...props} />}
+/>
+```
+
+#### match.params
+Route 컴포넌트의 path 속성에 `:` 을 사용해 입릭된 것은 매개변수 취급을 받아 자식컴포넌트의 props.match.params 로 값을 넘겨줍니다.
+```jsx
+<Route
+  path="/category/:categoryName"
+  component={Category}
+/>
+```
+```jsx
+const Category = ({ match }) => {
+  const { categoryname } = match.params
+  return <h1>{categoryName} 카테고리</h1>
+}
+```
+
+#### 쿼리스트링 처리
+Route 컴포넌트 자식에 전달되는 props.location 에는 window.location 과 역할이 같아 쿼리스트링까지 내장하고 있습니다. query-string 모듈을 사용하면 이를 효율적으로 다룰수 있습니다.
+```jsx
+import queryString from 'query-string'
+
+const Category = ({ match, location }) => {
+  const { categoryName } = match.params
+  const { sortBy } = queryString.parse(location.search)
+  return <h1>{categoryName} 카테고리</h1>
+}
+```
+
+#### 버튼으로 네비게이팅
+링크이동은 `a` 태그로 하는것이 맞지만, 뒤로가기 버튼에 한해서 버튼으로 구현하는 것도 가능합니다. 이는 접근성에 크게 위배되지 않아보이는게, 애플리케이션의 인터렉션 버튼의 일종이기 때문이라고 생각합니다.
+```jsx
+const Category = (props) => {
+
+  function goCategories() {
+    props.history.push('/categories') // 히스토리 스택에 push. 즉 일반적인 이동
+    // props.history.replace('/categories') // 히스토리 스택의 top Item을 교환. 즉 리다이렉팅과 같은 작용
+  }
+
+  return <button type="button" onClick={goCategories}>전체 카테고리로 이동</button>
+}
+```
+
+
+</div>
+</details>
+
+---------------------------------------
+
+<details open>
+<summary>4일차 학습</summary>
 <div markdown="1">
 
 ### 여기에 자유롭게 마크다운 정리 하시기 바랍니다.
@@ -237,4 +315,3 @@ from 이 오는순간 rule 을 적용하여 현재 path 와 비교합니다. exa
 - Markdown 에디터를 사용하면 마크다운 문법을 알고있지 않아도 작성하기 용이합니다. (https://stackedit.io/app#)
 
 </div>
-</details>
