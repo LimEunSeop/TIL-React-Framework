@@ -302,6 +302,176 @@ const Category = (props) => {
 }
 ```
 
+### 중첩 라우팅 구성방법
+자식 컴포넌트에서 새로운 서브 Navigation 구성하는데, **Nav의 to는 앞에 match.url 을, Route 의 path 에는 match.path 를 배치 시켜야 합니다.** Nav는 주소창의 URL 을 확장해야만 하고, Route 는 상위 컴포넌트에서 설정한 파라미터를 그대로 forwarding 해야할 의무가 있기 때문입니다.
+
+```jsx
+{/* 중첩 링크 구성 */}
+<NavLink to={`${match.url}/1f423`}>병아리</NavLink>
+
+{/* 중첩 라우트 */}
+<Route
+  path={`${match.url}/:id`}
+  component={FigureIcon}
+/>
+```
+
+#### 디렉터리 구성
+각 페이지를 views 디렉터리에 넣습니다. 중첩라우트가 발생하는 컴포넌트는 디렉터리를 새로 구성하여 index.js 에서 nav 와 route 를 구성하고 서브페이지를 추가해 나가는 것을 반복해 나가면 됩니다.
+```
+src/
+└── views/
+    ├── Home.js
+    ├── Lab/ # 중첩 라우트 디렉토리
+    │   ├── index.js # 중첩 라우팅 기본 컴포넌트
+    │   ├── FigureIcon.js # 동적 라우팅 컴포넌트
+    │   └── Lab.css
+    ├── Lecture.js
+    └── styles.js
+```
+
+#### 라우팅 정보 추출
+match.params 나 location 객세를 읽어서 확인합니다.
+```jsx
+export default ({ match, location }) => {
+
+  console.log(match.params) // match.params 정보 확인
+  console.log(location)     // location 정보 확인
+
+  // match.params.id
+  const { id } = match.params
+
+  return (
+    <figure
+      style={styles(figure, { marginTop: 50, background: iconImage(id) })}
+    />
+  )
+}
+```
+
+### 보호된라우팅
+컴포넌트 래핑을 통해 인증된 사용자만 라우팅되도록 하는 Route 를 만들 수 있습니다. 긴말필요없이 타이핑으로 예제를 따라치겠습니다.
+
+#### 인증
+간단한 인증 테스트를 위해 Auth 클래스를 작성합니다.
+```jsx
+class Auth {
+
+  constructor() {
+    this.isAuth = false
+  }
+
+  login(cb) {
+    this.isAuth = true
+    typeof cb === 'function' && cb()
+  }
+
+  logout(cb) {
+    this.isAuth = false
+    typeof cb === 'function' && cb()
+  }
+
+  isAuth() {
+    return this.isAuth
+  }
+}
+
+export default new Auth()
+```
+
+#### 보호된 라우트
+`ProtextedRoute` 컴포넌트는 이름 그대로 `component` 속성으로 전달 받은 컴포넌트를 래핑하여 보호합니다. `render` 함수를 활용해 감싼 컴포넌트를 렌더링 합니다.
+```jsx
+import React from 'react'
+import { Route, Redirect } from 'react-router-dom'
+import auth from './auth'
+
+const ProtectedRoute = ({component: Component, ...rest}) => {
+  <Route {...rest} render={
+    (props) => auth.isAuth ?
+                <Component {...props} /> :
+                <Redirect to={{
+                  pathname: '/',
+                  state: { from: props.location }
+                }}/>
+  }>
+}
+```
+> 리다이렉트를 로그인페이지로 이동하면 괜찮을듯? 로그인 다되면 state 로 받은 props.location.url 값 참고하여 이전에 이동실패한 페이지로 이동하면 될듯
+
+#### 라우트 설정
+보호된 라우트 모듈을 불러와 인증 없이 접근 못하도록 라우팅 설정합니다.
+```jsx
+import ProtectedRoute from './ProtectedRoute'
+
+<Router>
+  <Switch>
+    <ProtectedRoute path="/admin" component={AdminDashboard} />
+    <Route path="/" component={Landing} />
+  </Switch>
+</Router>
+```
+
+#### 로그인
+로그인 처리 할 컴포넌트에 `auth`모듈을 불러온 후, 버튼을 클릭하면 handleLogin 핸들러를 실행해 로그인 되도록 설정합니다.
+```jsx
+import React from 'react'
+import auth from './auth'
+
+class DemoLogin extends React.Component {
+
+  handleLogin = () => {
+    const { history } = this.props
+    auth.login(() => history.push('/app'))
+  }
+
+  render() {
+    return (
+      <button type="button" onClick={this.handleLogin}>로그인</button>
+    )
+  }
+}
+
+export default DemoLogin
+```
+
+#### 로그아웃
+로그아웃 처리 할 컴포넌트에 `auth` 모듈을 불러온 후, 버튼을 클릭하면 handleLogout 핸들러를 실행해 로그아웃 되도록 설정합니다.
+```jsx
+import React from 'react'
+import auth from './auth'
+
+class DemoLogout extends React.Component {
+
+  handleLogout = () => {
+    const { history } = this.props
+    auth.logout(() => history.push('app'))
+  }
+
+  render() {
+    return (
+      <button type="button" onClick={this.handleLogout}>로그아웃</button>
+    )
+  }
+}
+
+export default DemoLogout
+```
+
+### Route 컴포넌트 props 할당 규칙
+이 시점에서 Route 컴포넌트의 자식의 props 할당규칙을 정리해봅시다.
+```jsx
+<Route component={Children} />
+```
+이렇게 렌더링 하면 Children 컴포넌트에 match, location, history 가 잘 들어갑니다. 그러나 아래와 같은 방식은 할당 안됩니다.
+```jsx
+<Route>
+  <Children />
+</Route>
+```
+이렇게 되면 Children 정의때 withRouter HOC 를 사용하여 export 하거나 Hook(useHistory, useLocation, useParams, useRouteMatch)을 사용해야합니다.
+
+> Redux connect HOC 만 써도 match, location, history 전달 문제 없던데 어떻게 정리해야될지 아직 명확하지 않은 상태
 
 </div>
 </details>
