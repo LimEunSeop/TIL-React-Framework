@@ -239,7 +239,7 @@ Route 자식 컴포넌트는 match, location, history 3가지 props 를 받게 �
 - path : Route 객체의 path 속성값
 - url : 브라우저의 URL에 적힌 path 를 그대로 가져옵니다.
 - params : 매개변수를 통해 넘어온 값들의 쌍입니다. 뒤에 설명합니다.
-- isExact : url 이 path 에 정확히 매칭되었는지의 여부 (ex. exact 속성이 없는 Home Link 는 다른페이지 탐색시 IsExact 가 false 입니다.)
+- isExact : url 이 path 에 정확히 매칭되었는지의 여부 (ex. exact 속성이 없는 Home Link 는 다른페이지 탐색시 IsExact 가 false 입니다. 얻어걸린 match 는 false 가 된다는 뜻입니다.)
 
 **location** : 현재 URL 위치정보와 필요한 상태값을 담습니다.
 - hash : 현재 url 에 hash 가 있으면 여기에 담깁니다.
@@ -469,9 +469,21 @@ export default DemoLogout
   <Children />
 </Route>
 ```
+아래와 같이 라우터와 직접 연결되어있지 않은 컴포넌트도 할당 안됩니다.
+```jsx
+<Route component={Test}>
+
+function Test(props) {
+  return <Children />
+}
+
+function Children(props) {
+  console.log(props) // match, location, history 없음
+}
+```
 이렇게 되면 Children 정의때 withRouter HOC 를 사용하여 export 하거나 Hook(useHistory, useLocation, useParams, useRouteMatch)을 사용해야합니다.
 
-> Redux connect HOC 만 써도 match, location, history 전달 문제 없던데 어떻게 정리해야될지 아직 명확하지 않은 상태
+> withRouter HOC 도 뭔가 Consume 하는 느낌이 납니다. 왜냐, 필요한 뎁스에 가서 사용하니까요. 자식에 대대손손 props 를 안물려줘도 withRouter 하면 Route 컴포넌트 props 가 전달되니까요. 다만 직접적인 자식은 자동으로 받을 수 있다는 것이 차이지만요.
 
 </div>
 </details>
