@@ -752,7 +752,7 @@ svg 최적화는 필수이다.
 로컬 : svgo 라는 node 모듈 이용
 
 #### forwardRef
-ref 속성을 React 컴포넌트도 받고자 할때. 예를들어 버튼을 감싼 컴포넌트인 경우 button 요소에 ref 연결시켜 DOM 조작 하고 싶을때 forwardRef HOC 로  forwardRef 컴포넌트를 만듬. forwardRef 컴포넌트는 2번째 인자로 ref 를 받을 수 있게됨. 부모가 forwardRef 컴포넌트면 자손도 forwardRef 가 됨. props 에 전달 안됨. 무조건 이런 특별한 공정을 거쳐야됨. forwardRef 만들면 자식은 Anonymous 되니 필히 displayName 속성을 정의하는 것을 습관으로 하자.
+ref 속성을 React 컴포넌트도 받고자 할때. 예를들어 버튼을 감싼 컴포넌트인 경우 button 요소에 ref 연결시켜 DOM 조작 하고 싶을때 forwardRef HOC 로  forwardRef 컴포넌트를 만듬. forwardRef 컴포넌트는 2번째 인자로 ref 를 받을 수 있게됨. 부모가 forwardRef 컴포넌트면 자손도 forwardRef 가 됨. props 에 전달 안됨. props로 하면 null 로 나오지도 않음. 무조건 이런 특별한 공정을 거쳐야됨. forwardRef 만들면 자식은 Anonymous 되니 필히 displayName 속성을 정의하는 것을 습관으로 하자.
 
 #### createPortal
 body 아랫쪽 스크립트에 의존있을때, Toast 알림 접근성 설정할때(Vritual DOM Rendering으로는 Screen Reader 감지 불가)
