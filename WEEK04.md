@@ -754,6 +754,8 @@ svg 최적화는 필수이다.
 #### forwardRef
 ref 속성을 React 컴포넌트도 받고자 할때. 예를들어 버튼을 감싼 컴포넌트인 경우 button 요소에 ref 연결시켜 DOM 조작 하고 싶을때 forwardRef HOC 로  forwardRef 컴포넌트를 만듬. forwardRef 컴포넌트는 2번째 인자로 ref 를 받을 수 있게됨. 부모가 forwardRef 컴포넌트면 자손도 forwardRef 가 됨. props 에 전달 안됨. props로 하면 null 로 나오지도 않음. 무조건 이런 특별한 공정을 거쳐야됨. forwardRef 만들면 자식은 Anonymous 되니 필히 displayName 속성을 정의하는 것을 습관으로 하자.
 
+**클래스 컴포넌트에(함수 X) ref 속성을 주면 클래스 컴포넌트 인스턴스를 그대로 참조할 수 있게 됩니다. 따라서 forwardRef 하지 않아도 컴포넌트 내에서 ref 를 새로 정의하여 ref.current.ref.current 식으로 체이닝을 통해 실제DOM 에 접근 가능하긴 합니다. 하지만 유연함을 위해 forwardRef 를 적극 활용하는건 어떨까요?? (forwardRef 를 사용하기 시작한 순간 ref 의 대상 요소를 정해줘야합니다. 클래스 인스턴스에 접근 안돼요~)**
+
 > forwardRef 의 인자로는 함수 컴포넌트가 와야합니다. 따라서 클래스컴포넌트에 forwardRef 하고싶은 경우 아래와 같이 함수 컴포넌트로 래핑해야 합니다.
 > ```jsx
 > class ElemComponent extends Component {
@@ -765,7 +767,7 @@ ref 속성을 React 컴포넌트도 받고자 할때. 예를들어 버튼을 감
 >     }
 >   }
 > }
-
+>
 > export default React.forwardRef((props, ref) => <ElemComponent
 >   innerRef={ref} {...props}
 > />)
