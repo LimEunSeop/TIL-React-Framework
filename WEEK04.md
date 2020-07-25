@@ -47,6 +47,7 @@ jsconfig.json 파일을 프로젝트 루트에 추가한다.
   "include": ["src"]
 }
 ```
+>include 는 intellisense 지정파일 설정.  폴더 내 지역적으로 만들어 세분화 가능
 
 #### sass 절대경로 추가
 
