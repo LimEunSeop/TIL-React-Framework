@@ -46,7 +46,7 @@ https://www.youtube.com/watch?v=L1YLFYlkGnc&feature=youtu.be&t=4m47s
 그런 경우 span을 사용해 감춤 처리하되, 툴팁으로 표시하는 방법에 활용할 수도 있어요. 하지만 그런 경우가 아니라면 alt 속성 값을 적절히 주어 접근성을 준수할 수도 있습니다 ^^
   ```
 
-## React 컴포넌트, 이벤트 처리, 컴포넌트 통신, 접근성
+## React 컴포넌트, 이벤트 처리, 컴포넌트 통신, 접근성 그리고 미니 프로젝트(Array Method)
 
 <details open>
 <summary>1일차 학습 - 컴포넌트 & 전달 속성(props)</summary>
