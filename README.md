@@ -26,7 +26,7 @@
 
 ---------------------------------------
 
-### [3주차] : React 훅, 폼, 고차 컴포넌트, 스타일 컴포넌트 그리고 미니 프로젝트(- [React-MusicPlayer-App](https://github.com/LimEunSeop/React-MusicPlayer-App))
+### [3주차] : React 훅, 폼, 고차 컴포넌트, 스타일 컴포넌트 그리고 미니 프로젝트([React-MusicPlayer-App](https://github.com/LimEunSeop/React-MusicPlayer-App))
 - React Hooks
 - React Form
 - HOC (Higher-Order Component)
