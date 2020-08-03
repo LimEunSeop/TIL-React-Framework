@@ -36,7 +36,7 @@
     이는 DOM이 모두 마운트 되고나서의 User Input 을 핸들링하는 것이니 사이드이펙트가 당연히 발생하는것입니다.
   ```
 
-## React 훅, 폼, 고차 컴포넌트, 스타일 컴포넌트 그리고 미니 프로젝트 {E1}
+## React 훅, 폼, 고차 컴포넌트, 스타일 컴포넌트 그리고 미니 프로젝트(Music Player App)
 
 <details open>
 <summary>1일차 학습 - Mini Project {E0}</summary>
