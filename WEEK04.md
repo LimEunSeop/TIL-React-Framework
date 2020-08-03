@@ -738,9 +738,11 @@ export default connect(
 <div markdown="1">
 
 ### React 팁 2탄
+React-Redux-Ediya 앱 만들기 프로젝트를 하면서 메모한 내용입니다. 프로젝트 페이지는 [여기](https://github.com/LimEunSeop/React-Redux-EdiyaApp)를 클릭해주시기 바랍니다.
+
 #### 비동기 함수
-promise chain : 얘네 체인 한 세트가 비동기로 돌아감. 물론 체인은 순서가 지켜지겠지만
-async 함수 : 이 함수 자체는 비동기로 돌아감. 즉 이 함수가 호출되는 위치에서 비동기로 인식한다는거. async 함수 내에서는 순서가 물론 지켜짐. await 같은거 철저히 데이터 올 때까지 기다리고.
+- promise chain : 얘네 체인 한 세트가 비동기로 돌아감. 물론 체인은 순서가 지켜지겠지만. 기본적으로 Job 단위로 non-block 이지만, Job 마저도 non-block 하고싶으면 Job 안에 비동기함수 실행하여 Promise 를 Pending 상태로 만들면 됨.
+- async 함수 : 이 함수 자체가 비동기로 돌아감. 즉 이 함수가 호출되는 위치에서 비동기로 인식한다는거. async 함수 내에서는 순서가 물론 지켜짐. 내부에서 호출되는 비동기함수 앞에 await 붙여서 철저히 데이터 올 때까지 기다린다. 이로써 promise chain 에서 못 이룬 environment record 유지 및 사용이 가능해짐
 
 이 둘의 조합이 와도 어떻게 돌아갈지 감이 오겠지?
 
