@@ -14,7 +14,7 @@
     A.여기에 답변 내용을 작성합니다.
   ```
 
-## 싱글 페이지 앱 제작 및 미들웨어, 라이브러리 등을 활용 방법
+## 싱글 페이지 앱 제작 및 미들웨어, 라이브러리 등을 활용 방법 그리고 미니프로젝트(Firebase Chat App)
 
 <details open>
 <summary>1일차 학습 - React Router</summary>
