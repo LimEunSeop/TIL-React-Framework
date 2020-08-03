@@ -4,7 +4,7 @@
 
 ---------------------------------------
 
-## 4주차 대 주제를 작성합니다.
+## React 팁, 스타일 컴포넌트, 리덕스 그리고 미니 프로젝트(Ediya Coffee App)
 
 <details open>
 <summary>1일차 학습 - React 팁</summary>
