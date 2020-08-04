@@ -45,6 +45,8 @@
 
 [WEEK04](https://github.com/limeunseop/TIL-React-Framework/blob/master/WEEK04.md) : 4주차
 
+---------------------------------------
+
 ### [5주차] : 싱글 페이지 앱 제작 및 미들웨어, 라이브러리 등을 활용 방법 그리고 미니프로젝트([React-Firebase-ChatApp](https://github.com/LimEunSeop/React-Firebase-ChatApp))
 - React Router 라이브러리
 - 비동기 액션 생성 함수 전달(dispatch) 실습 ← Redux Thunk 미들웨어 통합
@@ -52,6 +54,13 @@
 - Mini Project ([React-Firebase-ChatApp](https://github.com/LimEunSeop/React-Firebase-ChatApp))
 
 [WEEK05](https://github.com/limeunseop/TIL-React-Framework/blob/master/WEEK05.md) : 5주차
+
+---------------------------------------
+
+### [심화정리] : Redux Hook,
+- Redux Hook
+
+[ADVANCED](https://github.com/limeunseop/TIL-React-Framework/blob/master/ADVANCED.md) : 싱화정리
 
 ---------------------------------------
 
