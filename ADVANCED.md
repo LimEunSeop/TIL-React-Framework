@@ -7,7 +7,7 @@
 ## 심화정리
 
 ### Redux Hook
-지금까지 배운 Redux 상태관리 방법을 쭉 정리해보면 다음과 같습니다.
+지금까지 배운 Redux 상태관리 방법을 쭉 정리해보면 다음과 같습니다. 
 ![Redux State Management Diagram](https://github.com/LimEunSeop/TIL-React-Framework/blob/master/assets/A-1.JPG?raw=true)
 
 여기서 처음보는것이 useSelector, useDispatch, useStore Hook 인데요, Functional Component 에서 connect 고차컴포넌트를 사용하기 어려워 하는 사람을 위해 만들어졌습니다. 그렴에서 이미 보아 알 수 있듯이, React Redux Provider 가 이미 감싸고 있기 때문에, Hook만 사용하면 됩니다.
