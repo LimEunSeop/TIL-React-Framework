@@ -57,8 +57,10 @@
 
 ---------------------------------------
 
-### [심화정리] : Redux Hook,
+### [심화정리]
 - Redux Hook
+- Redux Thunk
+- Redux Toolkit
 
 [ADVANCED](https://github.com/limeunseop/TIL-React-Framework/blob/master/ADVANCED.md) : 싱화정리
 
