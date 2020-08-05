@@ -18,7 +18,7 @@
 | useDispatch | dispatch 메서드를 가져옵니다. |
 | useStore | dispatch 와 state 를 포함하는 Store를 가져옵니다. (전통적인 방법) |
 
-사용법은 매우 간단합니다. useSelector 의 경우는 특정 속성을 가져와야하므로 콜백을 전달하고, dispatch, store 는 기존에 쓰던 방식대로 써 나가면 됩니다.
+사용법은 매우 간단합니다. useSelector 의 경우는 특정 속성을 가져와야하므로 콜백을 전달하고, dispatch, store 는 이미 Provider에 의해 Store가 제공되고있기 때문에 간단히 함수호출만 하고 기존에 쓰던 방식대로 써 나가면 됩니다.
 ```javascript
 // 스토어 상태 추출
 const name = useSelector(({ testReducer }) => {
