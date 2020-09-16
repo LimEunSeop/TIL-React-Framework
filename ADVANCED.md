@@ -41,7 +41,8 @@ Redux 에서의 Thunk 란, Action에 추가적인 행동을 지원하기 위해 
 **`redux-thunk` 모듈을 설치하고 미들웨어에 적용하면, dispatch의 인자 전달 부분을 가로채 thunk 가 전달될 수 있도록 해줍니다.**
 
 > **Q. 왜 액션 Creator 에서 추가 행동을 하여 Action을 리턴하지 않고, Thunk 를 반환하여 그 안에서 추가처리 하도록 하는 걸까? Thunk 필요 없지 않나?**
-> A. React Redux 에서 mapDispatchToProps 를 할 때, value 로 Action Creator 를 넘겨줍니다. props에 매핑하는 과정에서 ActionCreator 를 실행한 후 props에다 ()=>dispatch(ActionCreator 실행 리턴값) 을 매핑하는데요, 매핑때 Action Creator 가 실행되기 때문에 Thunk 안에 로직을 넣어서 미뤄야 하는 것입니다. 우리가 원하는 것은 Dispatch 시점에 일이 실행되는 것이지, 초기 Mapping 시에 일이 실행되는 것이 아니기 때문이지요. 이처럼 Redux 는 Action Creator 중심으로 돌아가는 구석이 있기때문에, Action Creator 에서 로직이 실행되지 않도록 Thunk로 미루는 작업이 필요한 것입니다. React Redux 의 connect 를 쓰지 않는다면 상관 없겠지만, connect 를 쓰거나 범용성있는 코드 작성을 위해 Thunk 는 꼭 필요하지 않을까 싶습니다. 이렇게 보니 Thunk 의 미루기 효과가 뭔지 확실히 체감이 됩니다.
+> 아래는 잘못된 정보로, 수정이 필요하여 보류합니다.
+> ~~A. React Redux 에서 mapDispatchToProps 를 할 때, value 로 Action Creator 를 넘겨줍니다. props에 매핑하는 과정에서 ActionCreator 를 실행한 후 props에다 ()=>dispatch(ActionCreator 실행 리턴값) 을 매핑하는데요, 매핑때 Action Creator 가 실행되기 때문에 Thunk 안에 로직을 넣어서 미뤄야 하는 것입니다. 우리가 원하는 것은 Dispatch 시점에 일이 실행되는 것이지, 초기 Mapping 시에 일이 실행되는 것이 아니기 때문이지요. 이처럼 Redux 는 Action Creator 중심으로 돌아가는 구석이 있기때문에, Action Creator 에서 로직이 실행되지 않도록 Thunk로 미루는 작업이 필요한 것입니다. React Redux 의 connect 를 쓰지 않는다면 상관 없겠지만, connect 를 쓰거나 범용성있는 코드 작성을 위해 Thunk 는 꼭 필요하지 않을까 싶습니다. 이렇게 보니 Thunk 의 미루기 효과가 뭔지 확실히 체감이 됩니다.~~
 
 > thunk.withExtraArgument 로 3번째 이상 전달인자를 설정할 수 있다. 아직은 나에게 시기상조. 나중에 필요할 때 알아보자.
 
